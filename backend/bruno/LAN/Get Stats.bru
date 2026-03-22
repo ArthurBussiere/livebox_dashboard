@@ -1,0 +1,21 @@
+meta {
+  name: Get Stats
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/lan/stats
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Seconds": 0,
+    "NumberOfReadings": 0,
+    "InterfaceName": "data",
+    "BeginTrafficTimestamp": 0,
+    "EndTrafficTimestamp": 0
+  }
+}

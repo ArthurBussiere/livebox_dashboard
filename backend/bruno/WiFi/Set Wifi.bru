@@ -1,0 +1,20 @@
+meta {
+  name: Set Wifi
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/wifi
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Enable": true,
+    "Status": true,
+    "ConfigurationMode": true,
+    "TriggerAutoChannelSelection": true
+  }
+}

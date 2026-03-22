@@ -1,0 +1,15 @@
+meta {
+  name: Add Device
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/lan/devices/:mac
+  body: none
+  auth: none
+}
+
+params:path {
+  mac: AA:BB:CC:DD:EE:FF
+}

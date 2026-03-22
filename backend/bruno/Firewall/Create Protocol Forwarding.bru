@@ -1,0 +1,23 @@
+meta {
+  name: Create Protocol Forwarding
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/firewall/protocol-forwarding
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "destinationIPAddress": "192.168.1.100",
+    "protocol": "TCP",
+    "sourceInterface": "data",
+    "sourcePrefix": "0.0.0.0/0",
+    "enable": true,
+    "persistent": true,
+    "description": "My rule"
+  }
+}

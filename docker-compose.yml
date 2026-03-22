@@ -1,0 +1,6 @@
+services:
+  livebox_dashboard:
+    build: .
+    ports:
+      - "4350:4350"
+    restart: unless-stopped

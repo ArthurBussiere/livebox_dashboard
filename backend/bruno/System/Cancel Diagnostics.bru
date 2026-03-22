@@ -1,0 +1,15 @@
+meta {
+  name: Cancel Diagnostics
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/system/diagnostics/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Remove Name
+  type: http
+  seq: 9
+}
+
+delete {
+  url: {{baseUrl}}/devices/:key/name
+  body: none
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+}
+
+params:query {
+  source: 
+}

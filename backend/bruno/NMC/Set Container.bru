@@ -1,0 +1,22 @@
+meta {
+  name: Set Container
+  type: http
+  seq: 25
+}
+
+put {
+  url: {{baseUrl}}/nmc/container
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Address": "192.168.1.1",
+    "Netmask": "255.255.255.0",
+    "DHCPEnable": true,
+    "DHCPMinAddress": "192.168.1.1",
+    "DHCPMaxAddress": "192.168.1.1",
+    "LeaseTime": 86400
+  }
+}

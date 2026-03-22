@@ -1,0 +1,19 @@
+meta {
+  name: Delete Custom Rule
+  type: http
+  seq: 28
+}
+
+delete {
+  url: {{baseUrl}}/firewall/custom-rules/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}
+
+params:query {
+  chain: 
+}

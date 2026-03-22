@@ -1,0 +1,15 @@
+meta {
+  name: Delete Protocol Forwarding
+  type: http
+  seq: 16
+}
+
+delete {
+  url: {{baseUrl}}/firewall/protocol-forwarding/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}

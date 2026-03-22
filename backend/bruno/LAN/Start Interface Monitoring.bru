@@ -1,0 +1,18 @@
+meta {
+  name: Start Interface Monitoring
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/lan/monitoring/interface/start
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "duration": 0,
+    "interval": 0
+  }
+}

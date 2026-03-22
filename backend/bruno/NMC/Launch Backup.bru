@@ -1,0 +1,11 @@
+meta {
+  name: Launch Backup
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{baseUrl}}/nmc/network-config/backup
+  body: json
+  auth: none
+}

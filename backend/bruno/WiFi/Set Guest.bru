@@ -1,0 +1,17 @@
+meta {
+  name: Set Guest
+  type: http
+  seq: 12
+}
+
+put {
+  url: {{baseUrl}}/wifi/guest
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Enable": true
+  }
+}

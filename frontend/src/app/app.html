@@ -1,0 +1,30 @@
+@if (auth.isAuthenticated()) {
+  <div class="shell" [class.sidebar-collapsed]="!layout.sidebarOpen()">
+
+    <app-header />
+
+    <aside class="sidebar">
+      <nav class="sidebar__nav">
+        @for (item of nav; track item.path) {
+          <a
+            class="nav-item"
+            [routerLink]="item.path"
+            routerLinkActive="nav-item--active"
+          >
+            <span class="nav-item__icon" [innerHTML]="item.icon | safeHtml"></span>
+            <span class="nav-item__label">{{ item.label }}</span>
+          </a>
+        }
+      </nav>
+    </aside>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+
+  </div>
+} @else {
+  <router-outlet />
+}
+
+<app-toast />

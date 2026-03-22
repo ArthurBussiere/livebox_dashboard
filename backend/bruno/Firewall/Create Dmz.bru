@@ -1,0 +1,20 @@
+meta {
+  name: Create Dmz
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{baseUrl}}/firewall/dmz
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "sourceInterface": "data",
+    "destinationIPAddress": "192.168.1.100",
+    "enable": true,
+    "sourcePrefix": "0.0.0.0/0"
+  }
+}

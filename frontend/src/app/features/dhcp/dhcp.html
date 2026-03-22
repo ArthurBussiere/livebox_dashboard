@@ -1,0 +1,169 @@
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">DHCP</h1>
+    <div class="btn-group">
+      @if (tab() === 'static' && !loading()) {
+        <button class="btn btn--primary btn--sm" (click)="showAddStatic.set(true)">+ Add Static Lease</button>
+      }
+      <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+    </div>
+  </div>
+
+  <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
+
+  @if (loading()) {
+    <div class="loading-center"><app-loading-spinner /></div>
+  } @else {
+    <div class="tabs">
+      <button class="tab" [class.tab--active]="tab()==='leases'" (click)="tab.set('leases')">Active Leases</button>
+      <button class="tab" [class.tab--active]="tab()==='static'" (click)="tab.set('static')">Static Leases</button>
+      <button class="tab" [class.tab--active]="tab()==='settings'" (click)="tab.set('settings')">Settings</button>
+    </div>
+
+    @switch (tab()) {
+      @case ('leases') {
+        <div class="card">
+          <div class="card__header"><h2 class="card__title">Active Leases ({{ leases().length }})</h2></div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Name</th><th>IP Address</th><th>MAC Address</th></tr></thead>
+              <tbody>
+                @if (!leases().length) {
+                  <tr><td colspan="3" class="table--empty">No active leases.</td></tr>
+                }
+                @for (l of leases(); track l['MACAddress'] ?? $index) {
+                  <tr>
+                    <td>{{ registry.nameFor(registry.byClientID(l['ClientID'])) || (l['FriendlyName'] ?? '—') }}</td>
+                    <td class="mono">{{ l['IPAddress'] ?? '—' }}</td>
+                    <td class="mono">{{ l['MACAddress'] ?? '—' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @case ('static') {
+        @if (showAddStatic()) {
+          <div class="card">
+            <div class="card__header">
+              <h2 class="card__title">Add Static Lease</h2>
+              <button class="btn btn--ghost btn--sm" (click)="showAddStatic.set(false)">Cancel</button>
+            </div>
+            <div class="card__body">
+              <form class="form" [formGroup]="addStaticForm" (ngSubmit)="addStaticLease()" style="max-width:480px">
+                <div class="form-field">
+                  <label class="form-label">Device *</label>
+                  @if (availableDevices().length) {
+                    <select class="form-select" (change)="selectDevice($any($event.target).value)">
+                      <option value="">— select a device —</option>
+                      @for (d of availableDevices(); track d['PhysAddress']) {
+                        <option [value]="d['PhysAddress']">
+                          {{ d['Name'] || 'Unknown' }} &nbsp;·&nbsp; {{ d['PhysAddress'] }} &nbsp;·&nbsp; {{ d['IPAddress'] || 'no IP' }}
+                        </option>
+                      }
+                    </select>
+                  } @else {
+                    <p class="form-hint">All known devices already have a static lease.</p>
+                  }
+                  @if (addStaticForm.value.macAddress) {
+                    <span class="form-hint">MAC: {{ addStaticForm.value.macAddress }}</span>
+                  }
+                </div>
+                <div class="form-field">
+                  <label class="form-label">IP Address *</label>
+                  <input class="form-input" formControlName="ipAddress" placeholder="192.168.1.x">
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn--primary" type="submit" [disabled]="addStaticForm.invalid || saving()">
+                    {{ saving() ? 'Saving…' : 'Add' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        }
+
+        <div class="card">
+          <div class="card__header"><h2 class="card__title">Static Leases ({{ staticLeases().length }})</h2></div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Name</th><th>MAC Address</th><th>IP Address</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                @if (!staticLeases().length) {
+                  <tr><td colspan="5" class="table--empty">No static leases configured.</td></tr>
+                }
+                @for (l of staticLeases(); track l['MACAddress'] ?? $index) {
+                  <tr>
+                    <td>{{ registry.nameFor(registry.byMACAddress(l['MACAddress'])) || '—' }}</td>
+                    <td class="mono">{{ l['MACAddress'] ?? '—' }}</td>
+                    <td class="mono">{{ l['IPAddress'] ?? '—' }}</td>
+                    <td>
+                      <app-status-badge
+                        [type]="l['Enable'] !== false ? 'success' : 'muted'"
+                        [label]="l['Enable'] !== false ? 'Enabled' : 'Disabled'" />
+                    </td>
+                    <td>
+                      <div class="btn-group">
+                        <button class="btn btn--ghost btn--sm" (click)="toggleLease(l)">
+                          {{ l['Enable'] !== false ? 'Disable' : 'Enable' }}
+                        </button>
+                        <button class="btn btn--ghost btn--sm" (click)="forceRenew(l['MACAddress'])">Renew</button>
+                        <button class="btn btn--danger btn--sm" (click)="confirmDelete(l)">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @case ('settings') {
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">Lease Time</h2></div>
+            <div class="card__body">
+              <form class="form" [formGroup]="leaseTimeForm" (ngSubmit)="saveLeaseTime()" style="max-width:320px">
+                <div class="form-field">
+                  <label class="form-label">Lease Time (seconds)</label>
+                  <input class="form-input" type="number" formControlName="leaseTime">
+                  <span class="form-hint">Default: 86400 (24h)</span>
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn--primary" type="submit" [disabled]="saving()">
+                    {{ saving() ? 'Saving…' : 'Save' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          @if (entries(doraStats()).length) {
+            <div class="card">
+              <div class="card__header"><h2 class="card__title">DORA Cycle Stats</h2></div>
+              <div class="card__body">
+                <table class="kv">
+                  @for (e of entries(doraStats()); track e[0]) {
+                    <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
+                  }
+                </table>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  }
+</div>
+
+<app-confirm-dialog
+  [open]="!!deleteTarget()"
+  title="Delete Static Lease"
+  [message]="'Remove static lease for ' + deleteTarget()?.['MACAddress'] + '?'"
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="deleteStatic()"
+  (cancelled)="deleteTarget.set(null)" />

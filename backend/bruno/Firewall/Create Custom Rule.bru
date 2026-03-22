@@ -1,0 +1,29 @@
+meta {
+  name: Create Custom Rule
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{baseUrl}}/firewall/custom-rules
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "action": "DROP",
+    "chain": "INPUT",
+    "destinationPort": 8080,
+    "sourcePort": 8080,
+    "destinationPrefix": "0.0.0.0/0",
+    "sourcePrefix": "0.0.0.0/0",
+    "protocol": "TCP",
+    "ipversion": 0,
+    "enable": true,
+    "description": "My rule",
+    "destinationMAC": "",
+    "sourceMAC": "",
+    "persistent": true
+  }
+}

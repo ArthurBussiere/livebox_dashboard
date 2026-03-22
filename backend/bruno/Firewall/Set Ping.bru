@@ -1,0 +1,21 @@
+meta {
+  name: Set Ping
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/firewall/ping/:interface
+  body: json
+  auth: none
+}
+
+params:path {
+  interface: data
+}
+
+body:json {
+  {
+    "service_enable": true
+  }
+}

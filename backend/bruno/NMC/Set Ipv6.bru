@@ -1,0 +1,19 @@
+meta {
+  name: Set Ipv6
+  type: http
+  seq: 17
+}
+
+put {
+  url: {{baseUrl}}/nmc/ipv6
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Enable": true,
+    "UserRequested": true,
+    "IPv4UserRequested": true
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend (FastAPI)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--port", "4350"],
+      "cwd": "${workspaceFolder}/backend",
+      "python": "${workspaceFolder}/backend/.venv/bin/python",
+      "envFile": "${workspaceFolder}/.env",
+      "jinja": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Frontend (Angular)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "preLaunchTask": "ng serve",
+      "sourceMapPathOverrides": {
+        "webpack:/*": "${workspaceFolder}/frontend/*",
+        "/./*": "${workspaceFolder}/frontend/*",
+        "/src/*": "${workspaceFolder}/frontend/src/*",
+        "/*": "*",
+        "/./~/*": "${workspaceFolder}/frontend/node_modules/*"
+      }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack",
+      "configurations": ["Backend (FastAPI)", "Frontend (Angular)"]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Start Pairing
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/wifi/pairing/start
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "clientPIN": "12345670"
+  }
+}

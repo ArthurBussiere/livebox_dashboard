@@ -1,0 +1,18 @@
+meta {
+  name: Find Devices
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/devices/find
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "expression": "",
+    "flags": ""
+  }
+}

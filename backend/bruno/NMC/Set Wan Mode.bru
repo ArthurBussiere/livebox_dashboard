@@ -1,0 +1,19 @@
+meta {
+  name: Set Wan Mode
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/nmc/wan/mode
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "WanMode": "ADSL",
+    "Username": "admin",
+    "Password": "admin"
+  }
+}

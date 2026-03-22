@@ -1,0 +1,19 @@
+meta {
+  name: Find By Ip
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/devices/by-ip
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "ipaddress": "",
+    "ipstatus": "",
+    "flags": ""
+  }
+}

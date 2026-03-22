@@ -1,0 +1,18 @@
+meta {
+  name: Add Static Lease
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/dhcp/leases/static
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "MACAddress": "AA:BB:CC:DD:EE:FF",
+    "IPAddress": "192.168.1.100"
+  }
+}

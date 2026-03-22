@@ -1,0 +1,15 @@
+meta {
+  name: Delete Host
+  type: http
+  seq: 3
+}
+
+delete {
+  url: {{baseUrl}}/dyndns/:hostname
+  body: none
+  auth: none
+}
+
+params:path {
+  hostname: myhome.example.org
+}

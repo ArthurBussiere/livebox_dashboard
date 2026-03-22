@@ -1,0 +1,15 @@
+meta {
+  name: Get Pool
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/dhcp/pool/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}

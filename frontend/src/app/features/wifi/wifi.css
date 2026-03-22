@@ -1,0 +1,32 @@
+.wps-card { display: flex; flex-direction: column; }
+
+.pairing-active {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-success);
+  font-weight: 500;
+}
+
+.pairing-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse 1.2s ease infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.4); }
+}
+
+.pin-display {
+  margin-top: 12px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  font-family: monospace;
+  color: var(--color-accent);
+}

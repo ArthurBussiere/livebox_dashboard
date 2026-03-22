@@ -1,0 +1,29 @@
+meta {
+  name: Create Port Forwarding
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/firewall/port-forwarding
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "origin": "webui",
+    "sourceInterface": "data",
+    "internalPort": 8080,
+    "destinationIPAddress": "192.168.1.100",
+    "protocol": "TCP",
+    "externalPort": 8080,
+    "sourcePrefix": "0.0.0.0/0",
+    "enable": true,
+    "persistent": true,
+    "description": "My rule",
+    "destinationMACAddress": "AA:BB:CC:DD:EE:FF",
+    "leaseDuration": 0,
+    "upnpv1Compat": true
+  }
+}

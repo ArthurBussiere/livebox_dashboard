@@ -1,0 +1,17 @@
+meta {
+  name: Reboot
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/nmc/reboot
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "reason": "User request"
+  }
+}

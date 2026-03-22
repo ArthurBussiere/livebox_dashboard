@@ -1,0 +1,123 @@
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">System</h1>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+  </div>
+
+  <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
+
+  @if (loading()) {
+    <div class="loading-center"><app-loading-spinner /></div>
+  } @else {
+    <div class="tabs">
+      <button class="tab" [class.tab--active]="tab()==='ipv6'" (click)="tab.set('ipv6')">IPv6</button>
+      <button class="tab" [class.tab--active]="tab()==='device'" (click)="tab.set('device')">Device</button>
+      <button class="tab" [class.tab--active]="tab()==='diag'" (click)="tab.set('diag')">Diagnostics</button>
+      <button class="tab" [class.tab--active]="tab()==='control'" (click)="tab.set('control')">Control</button>
+    </div>
+
+    @switch (tab()) {
+
+      @case ('ipv6') {
+        <div class="card" style="max-width:480px">
+          <div class="card__header"><h2 class="card__title">IPv6 Configuration</h2></div>
+          <div class="card__body">
+            <form class="form" [formGroup]="ipv6Form" (ngSubmit)="saveIPv6()">
+              <label class="toggle">
+                <input class="toggle__track" type="checkbox" formControlName="enable">
+                <span class="toggle__label">IPv6 Enabled</span>
+              </label>
+              <label class="toggle">
+                <input class="toggle__track" type="checkbox" formControlName="userRequested">
+                <span class="toggle__label">User Requested</span>
+              </label>
+              <div class="form-actions">
+                <button class="btn btn--primary" type="submit" [disabled]="saving()">
+                  {{ saving() ? 'Saving…' : 'Save' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      }
+
+      @case ('device') {
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">Device Info</h2></div>
+            <div class="card__body">
+              <table class="kv">
+                @for (e of entries(deviceInfo()); track e[0]) {
+                  <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
+                }
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">Firmware</h2></div>
+            <div class="card__body">
+              <button class="btn btn--ghost" (click)="checkFirmware()">Check for Upgrades</button>
+              @if (firmwareInfo()) {
+                <table class="kv" style="margin-top:12px">
+                  @for (e of entries(firmwareInfo()); track e[0]) {
+                    <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
+                  }
+                </table>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      @case ('diag') {
+        <div class="card">
+          <div class="card__header"><h2 class="card__title">Diagnostics</h2></div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>ID</th><th>Name</th><th>Description</th><th></th></tr></thead>
+              <tbody>
+                @if (!diagnostics().length) { <tr><td colspan="4" class="table--empty">No diagnostics available.</td></tr> }
+                @for (d of diagnostics(); track d['Id'] ?? $index) {
+                  <tr>
+                    <td class="mono">{{ d['Id'] ?? d['id'] ?? '—' }}</td>
+                    <td>{{ d['Name'] ?? d['name'] ?? '—' }}</td>
+                    <td>{{ d['Description'] ?? d['description'] ?? '—' }}</td>
+                    <td><button class="btn btn--ghost btn--sm" (click)="runDiag(d['Id'] ?? d['id'])">Run</button></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      @case ('control') {
+        <div class="cards-grid" style="max-width:600px">
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">Reboot</h2></div>
+            <div class="card__body">
+              <p class="text-muted" style="margin-bottom:16px">Restart the Livebox. All connected devices will lose connectivity temporarily.</p>
+              <button class="btn btn--ghost" (click)="confirmAction.set('reboot')">↺ Reboot Livebox</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">Factory Reset</h2></div>
+            <div class="card__body">
+              <p class="text-muted" style="margin-bottom:16px">Reset to factory defaults. All configuration will be permanently lost.</p>
+              <button class="btn btn--danger" (click)="confirmAction.set('reset')">⚠ Factory Reset</button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>
+
+<app-confirm-dialog
+  [open]="!!confirmAction()"
+  [title]="confirmAction() === 'reboot' ? 'Reboot Livebox' : 'Factory Reset'"
+  [message]="confirmDialog()"
+  [confirmLabel]="confirmAction() === 'reboot' ? 'Reboot' : 'Reset'"
+  [danger]="true"
+  (confirmed)="onConfirm()"
+  (cancelled)="confirmAction.set(null)" />

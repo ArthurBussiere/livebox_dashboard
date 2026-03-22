@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FastAPI: run",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--host", "127.0.0.1", "--port", "8000"],
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "jinja": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "pytest: all tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["-v"],
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "pytest: current file",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-v"],
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "pytest: current test",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-v", "-k", "${selectedText}"],
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

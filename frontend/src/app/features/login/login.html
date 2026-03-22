@@ -1,0 +1,33 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-card__header">
+      <h1 class="login-card__title">Livebox Dashboard</h1>
+      <p class="login-card__sub">Sign in with your livebox admin credentials to continue</p>
+    </div>
+
+    @if (error()) {
+    <div class="login-error">{{ error() }}</div>
+    }
+
+    <form class="form" (submit)="$event.preventDefault(); submit()">
+      <div class="form-field">
+        <label class="form-label">Livebox URL</label>
+        <input class="form-input" type="url" autocomplete="url" [value]="url()"
+          (input)="url.set($any($event.target).value)" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Username</label>
+        <input class="form-input" type="text" autocomplete="username" [value]="username()"
+          (input)="username.set($any($event.target).value)" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" autocomplete="current-password" [value]="password()"
+          (input)="password.set($any($event.target).value)" />
+      </div>
+      <button class="btn btn--primary login-card__submit" type="submit" [disabled]="loading()">
+        {{ loading() ? 'Signing in…' : 'Sign in' }}
+      </button>
+    </form>
+  </div>
+</div>

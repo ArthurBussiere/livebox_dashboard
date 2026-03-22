@@ -1,0 +1,17 @@
+meta {
+  name: Set User Input
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/system/diagnostics/input
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "input": "yes"
+  }
+}

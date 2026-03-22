@@ -1,0 +1,16 @@
+meta {
+  name: Has Tag
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/devices/:key/tags/:tag
+  body: json
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+  tag: 
+}

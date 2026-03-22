@@ -1,0 +1,23 @@
+meta {
+  name: Restore
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/device/config/restore
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "URL": "http://192.168.1.1/backup.cfg",
+    "Username": "admin",
+    "Password": "admin",
+    "FileSize": 0,
+    "TargetFileName": "",
+    "CheckSumAlgorithm": "",
+    "CheckSum": ""
+  }
+}

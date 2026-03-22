@@ -1,0 +1,23 @@
+meta {
+  name: Enable Remote Access
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/nmc/remote-access
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "admin",
+    "password": "admin",
+    "port": 8080,
+    "timeout": 3600,
+    "sourcePrefix": "0.0.0.0/0",
+    "accessType": "",
+    "secure": true
+  }
+}

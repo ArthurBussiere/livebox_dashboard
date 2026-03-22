@@ -1,0 +1,17 @@
+meta {
+  name: Set Status
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/wifi/status
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Status": true
+  }
+}

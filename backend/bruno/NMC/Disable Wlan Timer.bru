@@ -1,0 +1,15 @@
+meta {
+  name: Disable Wlan Timer
+  type: http
+  seq: 32
+}
+
+delete {
+  url: {{baseUrl}}/nmc/wlan-timer/:interface
+  body: none
+  auth: none
+}
+
+params:path {
+  interface: data
+}

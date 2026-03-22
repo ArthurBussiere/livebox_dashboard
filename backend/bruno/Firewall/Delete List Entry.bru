@@ -1,0 +1,16 @@
+meta {
+  name: Delete List Entry
+  type: http
+  seq: 31
+}
+
+delete {
+  url: {{baseUrl}}/firewall/lists/:list_name/:entry_id
+  body: none
+  auth: none
+}
+
+params:path {
+  list_name: my-name
+  entry_id: rule_001
+}

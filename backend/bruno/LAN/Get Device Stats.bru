@@ -1,0 +1,21 @@
+meta {
+  name: Get Device Stats
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/lan/stats/device
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Seconds": 0,
+    "NumberOfReadings": 0,
+    "DeviceName": "AA:BB:CC:DD:EE:FF",
+    "BeginTrafficTimestamp": 0,
+    "EndTrafficTimestamp": 0
+  }
+}

@@ -1,0 +1,17 @@
+meta {
+  name: Set Network Br
+  type: http
+  seq: 29
+}
+
+patch {
+  url: {{baseUrl}}/nmc/network-config/bridge
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "state": true
+  }
+}

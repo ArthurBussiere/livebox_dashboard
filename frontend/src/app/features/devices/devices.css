@@ -1,0 +1,78 @@
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filter-group {
+  display: flex;
+  border: 1px solid var(--color-surface-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.filter-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.filter-btn + .filter-btn {
+  border-left: 1px solid var(--color-surface-border);
+}
+
+.filter-btn:hover {
+  background: var(--color-content-bg);
+  color: var(--color-text);
+}
+
+.filter-btn--active {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.filter-btn--active:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.filter-select {
+  height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.device-name {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-hint {
+  opacity: 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  transition: opacity 0.15s;
+}
+
+.device-name:hover .edit-hint { opacity: 1; }
+
+.mono { font-family: monospace; font-size: 12px; }

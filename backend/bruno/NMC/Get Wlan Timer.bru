@@ -1,0 +1,15 @@
+meta {
+  name: Get Wlan Timer
+  type: http
+  seq: 30
+}
+
+get {
+  url: {{baseUrl}}/nmc/wlan-timer/:interface
+  body: none
+  auth: none
+}
+
+params:path {
+  interface: data
+}

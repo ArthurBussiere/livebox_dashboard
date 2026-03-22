@@ -1,0 +1,19 @@
+meta {
+  name: Set Enable
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/wifi/enable
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "value": true,
+    "temporary": true,
+    "source": ""
+  }
+}

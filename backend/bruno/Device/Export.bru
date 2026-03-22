@@ -1,0 +1,17 @@
+meta {
+  name: Export
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/device/export
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "fileName": "backup.cfg"
+  }
+}

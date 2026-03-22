@@ -1,0 +1,21 @@
+meta {
+  name: Get Parameters
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{baseUrl}}/devices/:key/parameters
+  body: none
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+}
+
+params:query {
+  parameter: 
+  expression: 
+  traverse: 
+}

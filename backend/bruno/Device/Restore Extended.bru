@@ -1,0 +1,26 @@
+meta {
+  name: Restore Extended
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/device/config/restore-extended
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "URL": "http://192.168.1.1/backup.cfg",
+    "Username": "admin",
+    "Password": "admin",
+    "FileSize": 0,
+    "TargetFileName": "",
+    "CheckSumAlgorithm": "",
+    "CheckSum": "",
+    "CACert": "",
+    "ClientCert": "",
+    "PrivateKey": ""
+  }
+}

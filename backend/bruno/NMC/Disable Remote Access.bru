@@ -1,0 +1,17 @@
+meta {
+  name: Disable Remote Access
+  type: http
+  seq: 13
+}
+
+delete {
+  url: {{baseUrl}}/nmc/remote-access
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "accessType": ""
+  }
+}

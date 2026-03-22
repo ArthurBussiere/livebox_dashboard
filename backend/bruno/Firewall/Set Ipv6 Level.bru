@@ -1,0 +1,17 @@
+meta {
+  name: Set Ipv6 Level
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/firewall/ipv6-level
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "level": "Medium"
+  }
+}

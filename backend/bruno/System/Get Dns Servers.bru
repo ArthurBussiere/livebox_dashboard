@@ -1,0 +1,11 @@
+meta {
+  name: Get Dns Servers
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/system/dns
+  body: json
+  auth: none
+}

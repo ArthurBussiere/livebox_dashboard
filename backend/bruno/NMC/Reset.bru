@@ -1,0 +1,17 @@
+meta {
+  name: Reset
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/nmc/reset
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "reason": "User request"
+  }
+}

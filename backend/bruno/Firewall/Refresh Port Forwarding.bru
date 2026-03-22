@@ -1,0 +1,24 @@
+meta {
+  name: Refresh Port Forwarding
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/firewall/port-forwarding/:id/refresh
+  body: json
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}
+
+body:json {
+  {
+    "origin": "webui",
+    "description": "My rule",
+    "persistent": true,
+    "leaseDuration": 0
+  }
+}

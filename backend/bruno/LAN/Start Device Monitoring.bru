@@ -1,0 +1,18 @@
+meta {
+  name: Start Device Monitoring
+  type: http
+  seq: 14
+}
+
+post {
+  url: {{baseUrl}}/lan/monitoring/device/start
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "duration": 0,
+    "interval": 0
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Set Device
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/devices/:key
+  body: json
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+}

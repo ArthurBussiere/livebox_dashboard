@@ -1,0 +1,19 @@
+meta {
+  name: Delete Port Forwarding
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{baseUrl}}/firewall/port-forwarding/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}
+
+params:query {
+  origin: 
+}

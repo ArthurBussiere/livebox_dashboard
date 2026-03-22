@@ -1,0 +1,23 @@
+meta {
+  name: Set Tag
+  type: http
+  seq: 13
+}
+
+put {
+  url: {{baseUrl}}/devices/:key/tags/:tag
+  body: json
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+  tag: 
+}
+
+body:json {
+  {
+    "expression": "",
+    "traverse": ""
+  }
+}

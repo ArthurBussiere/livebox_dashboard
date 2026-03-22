@@ -1,0 +1,92 @@
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">Devices</h1>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+  </div>
+
+  @if (!loading()) {
+    <div class="filters">
+      <input class="search-bar" type="search" placeholder="Search by name, IP, MAC…"
+        [ngModel]="search()" (ngModelChange)="search.set($event)">
+      <div class="filter-group">
+        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='all'" (click)="statusFilter.set('all')">All</button>
+        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='active'" (click)="statusFilter.set('active')">Active</button>
+        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='inactive'" (click)="statusFilter.set('inactive')">Inactive</button>
+      </div>
+      @if (deviceTypes().length) {
+        <select class="filter-select" [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
+          <option value="">All types</option>
+          @for (t of deviceTypes(); track t) { <option [value]="t">{{ t }}</option> }
+        </select>
+      }
+    </div>
+  }
+
+  <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
+
+  @if (loading()) {
+    <div class="loading-center"><app-loading-spinner /></div>
+  } @else {
+    <div class="card">
+      <div class="card__header">
+        <h2 class="card__title">All Devices ({{ filtered().length }})</h2>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th><th>IP Address</th><th>MAC Address</th>
+              <th>Type</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (!filtered().length) {
+              <tr><td colspan="6" class="table--empty">No devices found.</td></tr>
+            }
+            @for (device of filtered(); track device['Key'] ?? $index) {
+              <tr>
+                <td>
+                  @if (editingKey() === device['Key']) {
+                    <div class="inline-edit">
+                      <input class="form-input" style="width:140px"
+                        [ngModel]="editName()" (ngModelChange)="editName.set($event)"
+                        (keyup.enter)="saveName(device)"
+                        (keyup.escape)="cancelEdit()">
+                      <button class="btn btn--primary btn--sm" (click)="saveName(device)">✓</button>
+                      <button class="btn btn--ghost btn--sm" (click)="cancelEdit()">✕</button>
+                    </div>
+                  } @else {
+                    <span class="device-name" (click)="startEdit(device)">
+                      {{ device['Name'] || '(unnamed)' }}
+                      <span class="edit-hint">✎</span>
+                    </span>
+                  }
+                </td>
+                <td class="mono">{{ device['IPAddress'] ?? '—' }}</td>
+                <td class="mono">{{ device['PhysAddress'] ?? '—' }}</td>
+                <td>{{ device['DeviceType'] ?? '—' }}</td>
+                <td>
+                  <app-status-badge
+                    [type]="device['Active'] ? 'success' : 'muted'"
+                    [label]="device['Active'] ? 'Active' : 'Inactive'" />
+                </td>
+                <td>
+                  <button class="btn btn--danger btn--sm" (click)="confirmDelete(device)">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
+
+<app-confirm-dialog
+  [open]="!!deleteTarget()"
+  title="Remove Device"
+  [message]="'Remove ' + (deleteTarget()?.['Name'] || deleteTarget()?.['IPAddress'] || 'this device') + ' from the device list?'"
+  confirmLabel="Remove"
+  [danger]="true"
+  (confirmed)="deleteDevice()"
+  (cancelled)="deleteTarget.set(null)" />

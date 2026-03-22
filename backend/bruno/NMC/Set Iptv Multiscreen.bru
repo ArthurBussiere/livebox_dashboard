@@ -1,0 +1,17 @@
+meta {
+  name: Set Iptv Multiscreen
+  type: http
+  seq: 21
+}
+
+put {
+  url: {{baseUrl}}/nmc/iptv/multiscreen
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "Enable": true
+  }
+}

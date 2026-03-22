@@ -1,0 +1,21 @@
+meta {
+  name: Set Wlan Timer
+  type: http
+  seq: 31
+}
+
+put {
+  url: {{baseUrl}}/nmc/wlan-timer/:interface
+  body: json
+  auth: none
+}
+
+params:path {
+  interface: data
+}
+
+body:json {
+  {
+    "Timeout": 30
+  }
+}

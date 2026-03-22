@@ -1,0 +1,21 @@
+meta {
+  name: Create Redirect
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{baseUrl}}/firewall/redirect
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "protocol": "TCP",
+    "sourceInterface": "data",
+    "destinationPort": 8080,
+    "ipversion": 0,
+    "enable": true
+  }
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Remove Alternative
+  type: http
+  seq: 18
+}
+
+delete {
+  url: {{baseUrl}}/devices/:key/alternative
+  body: json
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+}
+
+body:json {
+  {
+    "alternative": ""
+  }
+}

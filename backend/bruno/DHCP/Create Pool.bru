@@ -1,0 +1,18 @@
+meta {
+  name: Create Pool
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/dhcp/pool
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "my-name",
+    "interface": "data"
+  }
+}

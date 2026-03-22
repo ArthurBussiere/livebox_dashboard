@@ -1,0 +1,15 @@
+meta {
+  name: Get Ping
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/firewall/ping/:interface
+  body: none
+  auth: none
+}
+
+params:path {
+  interface: data
+}

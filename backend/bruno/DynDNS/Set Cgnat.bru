@@ -1,0 +1,17 @@
+meta {
+  name: Set Cgnat
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/dyndns/cgnat
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "enable": true
+  }
+}

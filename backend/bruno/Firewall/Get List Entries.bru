@@ -1,0 +1,19 @@
+meta {
+  name: Get List Entries
+  type: http
+  seq: 29
+}
+
+get {
+  url: {{baseUrl}}/firewall/lists/:list_name
+  body: none
+  auth: none
+}
+
+params:path {
+  list_name: my-name
+}
+
+params:query {
+  entry_id: 
+}

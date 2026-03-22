@@ -1,0 +1,17 @@
+meta {
+  name: Set Lease Time
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/dhcp/lease-time
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "leasetime": 86400
+  }
+}

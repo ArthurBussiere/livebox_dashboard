@@ -1,0 +1,22 @@
+meta {
+  name: Set Led
+  type: http
+  seq: 23
+}
+
+put {
+  url: {{baseUrl}}/nmc/led/:name
+  body: json
+  auth: none
+}
+
+params:path {
+  name: my-name
+}
+
+body:json {
+  {
+    "state": "",
+    "color": ""
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Delete Redirect
+  type: http
+  seq: 25
+}
+
+delete {
+  url: {{baseUrl}}/firewall/redirect/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}

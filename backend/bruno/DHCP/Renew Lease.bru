@@ -1,0 +1,15 @@
+meta {
+  name: Renew Lease
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/dhcp/leases/static/:mac/renew
+  body: none
+  auth: none
+}
+
+params:path {
+  mac: AA:BB:CC:DD:EE:FF
+}

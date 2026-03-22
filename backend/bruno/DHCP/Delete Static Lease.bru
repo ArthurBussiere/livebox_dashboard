@@ -1,0 +1,15 @@
+meta {
+  name: Delete Static Lease
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/dhcp/leases/static/:mac
+  body: none
+  auth: none
+}
+
+params:path {
+  mac: AA:BB:CC:DD:EE:FF
+}

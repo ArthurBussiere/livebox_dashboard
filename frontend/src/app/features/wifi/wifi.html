@@ -1,0 +1,123 @@
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">WiFi</h1>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+  </div>
+
+  <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
+
+  @if (loading()) {
+    <div class="loading-center"><app-loading-spinner /></div>
+  } @else {
+    <div class="tabs">
+      <button class="tab" [class.tab--active]="tab()==='main'" (click)="tab.set('main')">Main</button>
+      <button class="tab" [class.tab--active]="tab()==='guest'" (click)="tab.set('guest')">Guest Network</button>
+      <button class="tab" [class.tab--active]="tab()==='wps'" (click)="tab.set('wps')">WPS / Pairing</button>
+    </div>
+
+    @switch (tab()) {
+      @case ('main') {
+        <div class="cards-grid">
+          <div class="card" style="grid-column: span 2">
+            <div class="card__header">
+              <h2 class="card__title">WiFi Settings</h2>
+              <app-status-badge
+                [type]="wifiData()?.['Enable'] ? 'success' : 'muted'"
+                [label]="wifiData()?.['Enable'] ? 'Enabled' : 'Disabled'" />
+            </div>
+            <div class="card__body">
+              <form class="form" [formGroup]="mainForm" (ngSubmit)="saveMain()">
+                <label class="toggle">
+                  <input class="toggle__track" type="checkbox" formControlName="enable"
+                    (change)="toggleWifi($any($event.target).checked)">
+                  <span class="toggle__label">WiFi Enabled</span>
+                </label>
+                <div class="form-field">
+                  <label class="form-label">Configuration Mode</label>
+                  <input class="form-input" formControlName="configurationMode">
+                </div>
+                <div class="form-actions">
+                  <button class="btn btn--primary" type="submit" [disabled]="saving()">
+                    {{ saving() ? 'Saving…' : 'Save' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          @if (stats()) {
+            <div class="card" style="grid-column: span 2">
+              <div class="card__header"><h2 class="card__title">Stats</h2></div>
+              <div class="card__body">
+                <table class="kv">
+                  @for (e of entries(stats()); track e[0]) {
+                    <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
+                  }
+                </table>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      @case ('guest') {
+        <div class="card" style="max-width:500px">
+          <div class="card__header">
+            <h2 class="card__title">Guest Network</h2>
+            <app-status-badge
+              [type]="guestData()?.['Enable'] ? 'success' : 'muted'"
+              [label]="guestData()?.['Enable'] ? 'Enabled' : 'Disabled'" />
+          </div>
+          <div class="card__body">
+            <label class="toggle">
+              <input class="toggle__track" type="checkbox"
+                [checked]="guestData()?.['Enable']"
+                (change)="toggleGuest($any($event.target).checked)">
+              <span class="toggle__label">Enable Guest Network</span>
+            </label>
+            @if (entries(guestData()).length) {
+              <table class="kv" style="margin-top:16px">
+                @for (e of entries(guestData()); track e[0]) {
+                  <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
+                }
+              </table>
+            }
+          </div>
+        </div>
+      }
+
+      @case ('wps') {
+        <div class="cards-grid">
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">WPS Pairing</h2></div>
+            <div class="card__body wps-card">
+              @if (!pairing()) {
+                <p class="text-muted" style="margin-bottom:16px">
+                  Start WPS pairing to allow devices to connect without a password.
+                </p>
+                <button class="btn btn--primary" (click)="startPairing()">Start Pairing</button>
+              } @else {
+                <div class="pairing-active">
+                  <div class="pairing-pulse"></div>
+                  <p>Pairing active — press WPS button on your device</p>
+                </div>
+                <button class="btn btn--danger" style="margin-top:16px" (click)="stopPairing()">Stop</button>
+              }
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">WPS PIN</h2></div>
+            <div class="card__body">
+              <p class="text-muted" style="margin-bottom:16px">Generate a WPS PIN for this device.</p>
+              <button class="btn btn--ghost" (click)="generatePin()">Generate PIN</button>
+              @if (generatedPin()) {
+                <div class="pin-display">{{ generatedPin() }}</div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  }
+</div>

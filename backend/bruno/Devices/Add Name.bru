@@ -1,0 +1,22 @@
+meta {
+  name: Add Name
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/devices/:key/name
+  body: json
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+}
+
+body:json {
+  {
+    "name": "my-name",
+    "source": ""
+  }
+}

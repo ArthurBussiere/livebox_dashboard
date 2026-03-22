@@ -1,0 +1,25 @@
+meta {
+  name: Set List Entry
+  type: http
+  seq: 30
+}
+
+post {
+  url: {{baseUrl}}/firewall/lists/:list_name/:entry_id
+  body: json
+  auth: none
+}
+
+params:path {
+  list_name: my-name
+  entry_id: rule_001
+}
+
+body:json {
+  {
+    "destinationPrefix": "0.0.0.0/0",
+    "protocol": "TCP",
+    "enable": true,
+    "sourcePrefix": "0.0.0.0/0"
+  }
+}

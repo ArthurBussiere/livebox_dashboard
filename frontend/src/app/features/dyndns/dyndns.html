@@ -1,0 +1,122 @@
+<div class="page">
+  <div class="page-header">
+    <h1 class="page-title">Dynamic DNS</h1>
+    <div class="btn-group">
+      @if (!loading()) {
+        <button class="btn btn--primary btn--sm" (click)="showAddForm.set(true)">+ Add Host</button>
+      }
+      <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+    </div>
+  </div>
+
+  <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
+
+  @if (loading()) {
+    <div class="loading-center"><app-loading-spinner /></div>
+  } @else {
+
+    <!-- Enable toggles -->
+    <div class="card">
+      <div class="card__body toggles-row">
+        <label class="toggle">
+          <input class="toggle__track" type="checkbox" [checked]="globalEnabled()"
+            (change)="toggleGlobal($any($event.target).checked)">
+          <span class="toggle__label">Global DynDNS Enabled</span>
+        </label>
+        <label class="toggle">
+          <input class="toggle__track" type="checkbox" [checked]="cgnatEnabled()"
+            (change)="toggleCgnat($any($event.target).checked)">
+          <span class="toggle__label">Enable on CGNAT</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Add host form -->
+    @if (showAddForm()) {
+      <div class="card">
+        <div class="card__header">
+          <h2 class="card__title">Add DynDNS Host</h2>
+          <button class="btn btn--ghost btn--sm" (click)="showAddForm.set(false)">Cancel</button>
+        </div>
+        <div class="card__body">
+          <form class="form" [formGroup]="addForm" (ngSubmit)="addHost()">
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Service</label>
+                <select class="form-select" formControlName="service">
+                  <option value="">— select —</option>
+                  @for (svc of services(); track svc) {
+                    <option [value]="svc">{{ svc }}</option>
+                  }
+                </select>
+              </div>
+              <div class="form-field">
+                <label class="form-label">Hostname</label>
+                <input class="form-input" formControlName="hostname" placeholder="myhost.dyndns.org">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label">Username</label>
+                <input class="form-input" formControlName="username">
+              </div>
+              <div class="form-field">
+                <label class="form-label">Password</label>
+                <input class="form-input" type="password" formControlName="password">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn--primary" type="submit" [disabled]="addForm.invalid || saving()">
+                {{ saving() ? 'Saving…' : 'Add Host' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    }
+
+    <!-- Hosts table -->
+    <div class="card">
+      <div class="card__header"><h2 class="card__title">Hosts ({{ hosts().length }})</h2></div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Hostname</th><th>Service</th><th>Username</th><th>Status</th><th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (!hosts().length) {
+              <tr><td colspan="5" class="table--empty">No DynDNS hosts configured.</td></tr>
+            }
+            @for (host of hosts(); track host['hostname'] ?? $index) {
+              <tr>
+                <td>{{ host['hostname'] ?? '—' }}</td>
+                <td>{{ host['service'] ?? '—' }}</td>
+                <td>{{ host['username'] ?? '—' }}</td>
+                <td>
+                  <app-status-badge
+                    [type]="host['enable'] ? 'success' : 'muted'"
+                    [label]="host['enable'] ? 'Enabled' : 'Disabled'" />
+                </td>
+                <td>
+                  <button class="btn btn--danger btn--sm"
+                    (click)="confirmDelete(host['hostname'])">Delete</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
+
+<app-confirm-dialog
+  [open]="!!deleteTarget()"
+  title="Delete Host"
+  [message]="'Remove ' + deleteTarget() + '?'"
+  confirmLabel="Delete"
+  [danger]="true"
+  (confirmed)="deleteHost()"
+  (cancelled)="deleteTarget.set(null)" />

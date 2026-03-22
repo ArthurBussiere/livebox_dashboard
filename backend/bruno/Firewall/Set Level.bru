@@ -1,0 +1,17 @@
+meta {
+  name: Set Level
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/firewall/level
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "level": "Medium"
+  }
+}

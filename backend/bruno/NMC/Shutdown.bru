@@ -1,0 +1,17 @@
+meta {
+  name: Shutdown
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/nmc/shutdown
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "reason": "User request"
+  }
+}

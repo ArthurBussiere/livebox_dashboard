@@ -1,0 +1,65 @@
+<header class="app-header">
+
+  <!-- Hamburger -->
+  <button class="app-header__hamburger" (click)="layout.toggle()"
+    [attr.aria-label]="layout.sidebarOpen() ? 'Close menu' : 'Open menu'">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- Brand -->
+  <div class="app-header__brand">
+    <span class="app-header__title">Livebox</span>
+  </div>
+
+  <div class="app-header__divider"></div>
+
+  <!-- WAN -->
+  <div class="app-header__group">
+    <span class="app-header__label">WAN</span>
+    <span class="app-header__dot" [class.app-header__dot--up]="wanUp()" [class.app-header__dot--down]="!wanUp()"></span>
+    <span class="app-header__value">{{ wanStatus()?.['WanState'] ?? '—' }}</span>
+    @if (wanStatus()?.['IPAddress']) {
+    <span class="app-header__sub">{{ wanStatus()!['IPAddress'] }}</span>
+    }
+    @if (wanStatus()?.['Protocol']) {
+    <span class="app-header__tag">{{ wanStatus()!['Protocol'] }}</span>
+    }
+    @if (wanStatus()?.['LinkType']) {
+    <span class="app-header__tag">{{ wanStatus()!['LinkType'] }}</span>
+    }
+  </div>
+
+  <div class="app-header__divider"></div>
+
+  <!-- Devices -->
+  <div class="app-header__group">
+    <span class="app-header__label">Devices</span>
+    <span class="app-header__value"><strong>{{ activeDevices() }}</strong> active</span>
+    @if (totalDevices() > 0) {
+    <span class="app-header__sub">/ {{ totalDevices() }} total</span>
+    }
+  </div>
+
+  <div class="app-header__divider"></div>
+
+  <!-- WiFi -->
+  <div class="app-header__group">
+    <span class="app-header__label">WiFi</span>
+    <label class="app-header__toggle">
+      <input type="checkbox" [checked]="wifiEnabled()" (change)="toggleWifi()">
+      <span class="app-header__toggle-track"></span>
+    </label>
+    @if (wifiSsid()) {
+    <span class="app-header__value">{{ wifiSsid() }}</span>
+    }
+    @if (wifiChannel()) {
+    <span class="app-header__sub">ch.{{ wifiChannel() }}</span>
+    }
+  </div>
+
+  <div class="app-header__divider"></div>
+
+  <!-- Logout -->
+  <button class="app-header__logout" (click)="auth.logout()">Sign out</button>
+
+</header>

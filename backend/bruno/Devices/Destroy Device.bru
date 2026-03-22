@@ -1,0 +1,15 @@
+meta {
+  name: Destroy Device
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{baseUrl}}/devices/:key
+  body: none
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+}

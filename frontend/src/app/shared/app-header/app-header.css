@@ -1,0 +1,219 @@
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--color-sidebar-bg);
+  color: var(--color-sidebar-fg);
+  padding: 0 24px;
+  height: 56px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-sidebar-border);
+}
+
+/* Hamburger button */
+.app-header__hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.app-header__hamburger:hover {
+  background: var(--color-sidebar-hover);
+}
+
+.app-header__hamburger span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--color-sidebar-fg-muted);
+  transition: background 0.15s;
+}
+
+.app-header__hamburger:hover span {
+  background: var(--color-sidebar-fg);
+}
+
+/* Brand (left, matches sidebar brand block) */
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 196px; /* align with sidebar width minus padding */
+  flex-shrink: 0;
+}
+
+.app-header__logo {
+  font-size: 22px;
+  color: var(--color-accent);
+}
+
+.app-header__title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Vertical divider */
+.app-header__divider {
+  width: 1px;
+  height: 28px;
+  background: var(--color-sidebar-border);
+  flex-shrink: 0;
+  margin: 0 20px;
+}
+
+/* Info group */
+.app-header__group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.app-header__label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--color-sidebar-fg-muted);
+}
+
+.app-header__value {
+  font-size: 13px;
+  color: var(--color-sidebar-fg);
+}
+
+.app-header__value strong {
+  color: var(--color-accent);
+}
+
+.app-header__sub {
+  font-size: 12px;
+  color: var(--color-sidebar-fg-muted);
+  font-family: ui-monospace, monospace;
+}
+
+.app-header__tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.07);
+  color: var(--color-sidebar-fg-muted);
+  letter-spacing: 0.3px;
+}
+
+/* WAN status dot */
+.app-header__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.app-header__dot--up   { background: var(--color-success); box-shadow: 0 0 5px var(--color-success); }
+.app-header__dot--down { background: var(--color-danger);  box-shadow: 0 0 5px var(--color-danger);  }
+
+/* WiFi toggle */
+.app-header__toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.app-header__toggle input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.app-header__toggle-track {
+  width: 32px;
+  height: 18px;
+  background: var(--color-sidebar-border);
+  border-radius: 9px;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.app-header__toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.app-header__toggle input:checked + .app-header__toggle-track {
+  background: var(--color-accent);
+}
+
+.app-header__toggle input:checked + .app-header__toggle-track::after {
+  transform: translateX(14px);
+}
+
+/* Logout button (pushed to the right) */
+.app-header__logout {
+  margin-left: auto;
+  padding: 5px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-sidebar-border);
+  background: transparent;
+  color: var(--color-sidebar-fg-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.app-header__logout:hover {
+  background: var(--color-sidebar-hover);
+  color: var(--color-sidebar-fg);
+}
+
+/* Reboot button (pushed to the right) */
+.app-header__actions {
+  margin-left: auto;
+}
+
+.app-header__btn {
+  padding: 5px 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-sidebar-border);
+  background: transparent;
+  color: var(--color-sidebar-fg-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.app-header__btn:hover:not(:disabled) {
+  background: var(--color-sidebar-hover);
+  color: var(--color-sidebar-fg);
+}
+
+.app-header__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

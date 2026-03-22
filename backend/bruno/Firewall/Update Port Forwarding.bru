@@ -1,0 +1,29 @@
+meta {
+  name: Update Port Forwarding
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{baseUrl}}/firewall/port-forwarding/:id
+  body: json
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}
+
+body:json {
+  {
+    "origin": "webui",
+    "sourceInterface": "data",
+    "internalPort": 8080,
+    "destinationIPAddress": "192.168.1.100",
+    "protocol": "TCP",
+    "externalPort": 8080,
+    "enable": true,
+    "persistent": true,
+    "description": "My rule"
+  }
+}

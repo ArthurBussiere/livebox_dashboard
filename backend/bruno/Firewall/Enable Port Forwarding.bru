@@ -1,0 +1,22 @@
+meta {
+  name: Enable Port Forwarding
+  type: http
+  seq: 12
+}
+
+patch {
+  url: {{baseUrl}}/firewall/port-forwarding/:id/enable
+  body: json
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}
+
+body:json {
+  {
+    "origin": "webui",
+    "enable": true
+  }
+}

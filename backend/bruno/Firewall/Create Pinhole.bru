@@ -1,0 +1,28 @@
+meta {
+  name: Create Pinhole
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{baseUrl}}/firewall/pinhole
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "origin": "webui",
+    "sourceInterface": "data",
+    "destinationPort": 8080,
+    "destinationIPAddress": "192.168.1.100",
+    "protocol": "TCP",
+    "sourcePort": 8080,
+    "sourcePrefix": "0.0.0.0/0",
+    "ipversion": 0,
+    "enable": true,
+    "persistent": true,
+    "description": "My rule",
+    "destinationMACAddress": "AA:BB:CC:DD:EE:FF"
+  }
+}

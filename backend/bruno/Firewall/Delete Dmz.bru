@@ -1,0 +1,15 @@
+meta {
+  name: Delete Dmz
+  type: http
+  seq: 22
+}
+
+delete {
+  url: {{baseUrl}}/firewall/dmz/:id
+  body: none
+  auth: none
+}
+
+params:path {
+  id: rule_001
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Get Topology
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{baseUrl}}/devices/:key/topology
+  body: none
+  auth: none
+}
+
+params:path {
+  key: AA:BB:CC:DD:EE:FF
+}
+
+params:query {
+  expression: 
+  traverse: 
+  flags: 
+}

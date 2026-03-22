@@ -1,0 +1,21 @@
+meta {
+  name: Add Host
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/dyndns
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "service": "dyndns",
+    "hostname": "myhome.example.org",
+    "username": "admin",
+    "password": "admin",
+    "enable": true
+  }
+}
