@@ -22,4 +22,4 @@ COPY --from=frontend /app/dist/livebox_dashboard/browser/ ./static/
 RUN mv ./static/index.csr.html ./static/index.html
 
 EXPOSE 4350
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "4350"]
+CMD ["/app/.venv/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "4350"]
