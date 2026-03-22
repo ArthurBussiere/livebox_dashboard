@@ -6,7 +6,6 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
 
 from core.auth import require_auth
 from routers import auth, device, dhcp, devices, dyndns, firewall, lan, nmc, phone, system, wifi
@@ -84,17 +83,17 @@ async def health() -> dict:
 
 _protected = {"dependencies": [Depends(require_auth)]}
 
-app.include_router(auth.router,     prefix="/auth",     tags=["Auth"])
-app.include_router(device.router,   prefix="/device",   tags=["Device"],   **_protected)
-app.include_router(firewall.router, prefix="/firewall", tags=["Firewall"], **_protected)
-app.include_router(lan.router,      prefix="/lan",      tags=["LAN"],      **_protected)
-app.include_router(wifi.router,     prefix="/wifi",     tags=["WiFi"],     **_protected)
-app.include_router(phone.router,    prefix="/phone",    tags=["Phone"],    **_protected)
-app.include_router(dyndns.router,   prefix="/dyndns",   tags=["DynDNS"],   **_protected)
-app.include_router(nmc.router,      prefix="/nmc",      tags=["NMC"],      **_protected)
-app.include_router(dhcp.router,     prefix="/dhcp",     tags=["DHCP"],     **_protected)
-app.include_router(devices.router,  prefix="/devices",  tags=["Devices"],  **_protected)
-app.include_router(system.router,   prefix="/system",   tags=["System"],   **_protected)
+app.include_router(auth.router,     prefix="/api/auth",     tags=["Auth"])
+app.include_router(device.router,   prefix="/api/device",   tags=["Device"],   **_protected)
+app.include_router(firewall.router, prefix="/api/firewall", tags=["Firewall"], **_protected)
+app.include_router(lan.router,      prefix="/api/lan",      tags=["LAN"],      **_protected)
+app.include_router(wifi.router,     prefix="/api/wifi",     tags=["WiFi"],     **_protected)
+app.include_router(phone.router,    prefix="/api/phone",    tags=["Phone"],    **_protected)
+app.include_router(dyndns.router,   prefix="/api/dyndns",   tags=["DynDNS"],   **_protected)
+app.include_router(nmc.router,      prefix="/api/nmc",      tags=["NMC"],      **_protected)
+app.include_router(dhcp.router,     prefix="/api/dhcp",     tags=["DHCP"],     **_protected)
+app.include_router(devices.router,  prefix="/api/devices",  tags=["Devices"],  **_protected)
+app.include_router(system.router,   prefix="/api/system",   tags=["System"],   **_protected)
 
 
 # ---------------------------------------------------------------------------
@@ -103,5 +102,13 @@ app.include_router(system.router,   prefix="/system",   tags=["System"],   **_pr
 
 _STATIC = Path(__file__).parent / "static"
 
-if _STATIC.is_dir():
-    app.mount("/", StaticFiles(directory=_STATIC, html=True), name="spa")
+
+@app.get("/{full_path:path}", include_in_schema=False)
+async def spa(full_path: str) -> FileResponse:
+    file = _STATIC / full_path
+    if file.is_file():
+        return FileResponse(file)
+    index = _STATIC / "index.html"
+    if index.is_file():
+        return FileResponse(index)
+    raise HTTPException(status_code=404, detail="Not found")

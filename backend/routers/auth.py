@@ -25,6 +25,11 @@ async def login(body: LoginRequest) -> TokenResponse:
     return TokenResponse(token=create_token(session))
 
 
+@router.get("/check", status_code=204)
+async def check(_: str = Depends(require_auth)) -> None:
+    """Verify the session token is still valid."""
+
+
 @router.post("/logout", status_code=204)
 async def logout(token: str = Depends(require_auth)) -> None:
     await revoke_token(token)

@@ -1,10 +1,15 @@
 import { inject } from '@angular/core';
 import { Router, Routes } from '@angular/router';
+import { map } from 'rxjs';
 import { AuthService } from './core/auth.service';
 
 const authGuard = () => {
   const auth = inject(AuthService);
-  return auth.isAuthenticated() ? true : inject(Router).createUrlTree(['/login']);
+  const router = inject(Router);
+  if (!auth.isAuthenticated()) return router.createUrlTree(['/login']);
+  return auth.checkSession().pipe(
+    map((valid) => valid || router.createUrlTree(['/login'])),
+  );
 };
 
 const noAuthGuard = () => {

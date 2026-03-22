@@ -2,7 +2,7 @@ import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
@@ -17,6 +17,17 @@ export class AuthService {
     isPlatformBrowser(this.platformId) ? localStorage.getItem(this.TOKEN_KEY) : null,
   );
   readonly isAuthenticated = computed(() => this.token() !== null);
+
+  checkSession(): Observable<boolean> {
+    if (!this.token()) return of(false);
+    return this.http.get(`${this.base}/auth/check`).pipe(
+      map(() => true),
+      catchError(() => {
+        this.clearToken();
+        return of(false);
+      }),
+    );
+  }
 
   login(url: string, username: string, password: string): Observable<void> {
     return this.http
