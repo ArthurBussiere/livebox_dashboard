@@ -14,12 +14,13 @@
       "console": "integratedTerminal"
     },
     {
-      "name": "Frontend (Angular)",
+      "name": "Frontend Chrome (Angular)",
       "type": "chrome",
       "request": "launch",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}/frontend/src",
       "preLaunchTask": "ng serve",
+      "postDebugTask": "stop ng serve",
       "sourceMapPathOverrides": {
         "webpack:/*": "${workspaceFolder}/frontend/*",
         "/./*": "${workspaceFolder}/frontend/*",
@@ -27,12 +28,31 @@
         "/*": "*",
         "/./~/*": "${workspaceFolder}/frontend/node_modules/*"
       }
+    },
+    {
+      "name": "Frontend Firefox (Angular)",
+      "type": "firefox",
+      "request": "launch",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "preLaunchTask": "ng serve",
+      "postDebugTask": "stop ng serve",
+      "pathMappings": [
+        {
+          "url": "webpack:///",
+          "path": "${workspaceFolder}/frontend/"
+        }
+      ]
     }
   ],
   "compounds": [
     {
-      "name": "Full Stack",
-      "configurations": ["Backend (FastAPI)", "Frontend (Angular)"]
+      "name": "Full Stack (Chrome)",
+      "configurations": ["Backend (FastAPI)", "Frontend Chrome (Angular)"]
+    },
+    {
+      "name": "Full Stack (Firefox)",
+      "configurations": ["Backend (FastAPI)", "Frontend Firefox (Angular)"]
     }
   ]
 }

@@ -19,5 +19,15 @@
         }
       }
     }
+    ,
+    {
+      "label": "stop ng serve",
+      "type": "shell",
+      "command": "echo 'ng serve stopped'",
+      "presentation": {
+        "reveal": "never"
+      },
+      "problemMatcher": []
+    }
   ]
 }
