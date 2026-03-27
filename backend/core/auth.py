@@ -38,3 +38,12 @@ def require_auth(
 
 async def get_session(token: str = Depends(require_auth)) -> LiveboxSession:
     return _sessions[token][0]
+
+
+def get_session_by_token(token: str) -> LiveboxSession | None:
+    """Validate a raw bearer token and return its session, or None if invalid/expired."""
+    entry = _sessions.get(token)
+    if entry is None or time.time() > entry[1]:
+        _sessions.pop(token, None)
+        return None
+    return entry[0]

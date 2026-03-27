@@ -46,7 +46,7 @@ export default class Devices implements OnInit {
       if (status === 'inactive' && d['Active']) return false;
       if (type && d['DeviceType'] !== type) return false;
       if (!q) return true;
-      return [d['Name'], d['IPAddress'], d['PhysAddress'], d['DeviceType']]
+      return [this.getDisplayName(d), d['IPAddress'], d['PhysAddress'], d['DeviceType']]
         .some((v) => String(v ?? '').toLowerCase().includes(q));
     });
   });
@@ -71,9 +71,15 @@ export default class Devices implements OnInit {
     this.registry.load();
   }
 
+  getDisplayName(device: AnyRecord): string {
+    const names: AnyRecord[] = device['Names'] ?? [];
+    const gui = names.find((n: AnyRecord) => n['Source'] === 'GUI');
+    return gui ? gui['Name'] : (device['Name'] ?? '');
+  }
+
   startEdit(device: AnyRecord): void {
     this.editingKey.set(device['Key']);
-    this.editName.set(device['Name'] ?? '');
+    this.editName.set(this.getDisplayName(device));
   }
 
   cancelEdit(): void { this.editingKey.set(null); }
@@ -84,7 +90,11 @@ export default class Devices implements OnInit {
     this.devicesService.setName(device['Key'], { name, source: 'GUI' }).subscribe({
       next: () => {
         this.allDevices.update((list) =>
-          list.map((d) => d['Key'] === device['Key'] ? { ...d, Name: name } : d),
+          list.map((d) => {
+            if (d['Key'] !== device['Key']) return d;
+            const names: AnyRecord[] = (d['Names'] ?? []).filter((n: AnyRecord) => n['Source'] !== 'GUI');
+            return { ...d, Names: [...names, { Name: name, Source: 'GUI' }] };
+          }),
         );
         this.editingKey.set(null);
       },

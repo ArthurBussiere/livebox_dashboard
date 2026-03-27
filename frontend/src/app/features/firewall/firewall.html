@@ -102,12 +102,12 @@
           </div>
           <div class="table-wrap">
             <table class="table">
-              <thead><tr><th>ID</th><th>Ext Port</th><th>Int Port</th><th>Destination IP</th><th>Protocol</th><th>Status</th><th></th></tr></thead>
+              <thead><tr><th>Description</th><th>Ext Port</th><th>Int Port</th><th>Destination IP</th><th>Protocol</th><th>Status</th><th></th></tr></thead>
               <tbody>
                 @if (!portRules().length) { <tr><td colspan="7" class="table--empty">No rules.</td></tr> }
                 @for (r of portRules(); track r['Id'] ?? $index) {
                   <tr>
-                    <td>{{ r['Id'] ?? '—' }}</td>
+                    <td>{{ r['Description'] ?? r['Id'] ?? '—' }}</td>
                     <td class="mono">{{ r['ExternalPort'] ?? r['InternalPort'] ?? '—' }}</td>
                     <td class="mono">{{ r['InternalPort'] ?? '—' }}</td>
                     <td class="mono">

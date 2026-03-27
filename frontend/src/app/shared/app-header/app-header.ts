@@ -61,7 +61,7 @@ export class AppHeader {
   toggleWifi(): void {
     const next = !this.wifiEnabled();
     this.wifiEnabled.set(next);
-    this.wifiService.toggleEnable().subscribe({
+    this.wifiService.set({ Enable: next }).subscribe({
       error: (err: ErrorResponse) => { this.wifiEnabled.set(!next); console.error(err.detail); },
     });
   }

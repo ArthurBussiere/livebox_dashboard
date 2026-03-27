@@ -1,112 +1,91 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { JsonPipe } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { LanService } from '../../services/lan.service';
-import { ErrorResponse } from '../../models';
-import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
-import { ErrorBanner } from '../../shared/error-banner/error-banner';
+import { Component, inject, computed, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { TrafficWsService, POLL_INTERVAL_S } from '../../services/traffic-ws.service';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyRecord = Record<string, any>;
+
+const CHART_W = 800;
+const CHART_H = 320;
+const MAX_POINTS = 120; // must match MAX_HISTORY in traffic-ws.service
 
 @Component({
   selector: 'app-lan',
   templateUrl: './lan.html',
   styleUrl: './lan.css',
-  imports: [ReactiveFormsModule, JsonPipe, LoadingSpinner, ErrorBanner],
+  imports: [],
 })
 export default class Lan implements OnInit {
-  private readonly lan = inject(LanService);
-  private readonly fb = inject(FormBuilder);
+  private readonly trafficWs = inject(TrafficWsService);
+  private readonly platformId = inject(PLATFORM_ID);
 
-  readonly loading = signal(true);
-  readonly error = signal<string | null>(null);
-  readonly monitoring = signal(false);
+  /** History lives in the singleton service — persists across navigations. */
+  readonly history = this.trafficWs.history;
 
-  readonly wanCounters = signal<AnyRecord | null>(null);
-  readonly saturation = signal<AnyRecord | null>(null);
-  readonly interfaces = signal<string[]>([]);
-  readonly statsResult = signal<AnyRecord | null>(null);
-  readonly statsLoading = signal(false);
+  readonly chartW = CHART_W;
+  readonly chartH = CHART_H;
 
-  readonly statsForm = this.fb.group({
-    seconds: [60, Validators.required],
-    numberOfReadings: [5, Validators.required],
-    interfaceNames: ['', Validators.required],
+  readonly currentRx = computed(() => {
+    const h = this.history();
+    return h.length ? h[h.length - 1].rxBps : 0;
   });
-
-  readonly monitorForm = this.fb.group({
-    duration: [60, Validators.required],
-    interval: [5, Validators.required],
+  readonly currentTx = computed(() => {
+    const h = this.history();
+    return h.length ? h[h.length - 1].txBps : 0;
   });
+  readonly peakBps = computed(() => {
+    const h = this.history();
+    if (h.length === 0) return 1;
+    const sorted = h.map(p => Math.max(p.rxBps, p.txBps)).sort((a, b) => a - b);
+    const p95 = sorted[Math.floor(sorted.length * 0.95)] ?? sorted[sorted.length - 1];
+    return Math.max(p95, 1);
+  });
+  readonly rxLinePath = computed(() => this.buildLinePath('rx'));
+  readonly txLinePath = computed(() => this.buildLinePath('tx'));
+  readonly rxAreaPath = computed(() => this.buildAreaPath('rx'));
+  readonly txAreaPath = computed(() => this.buildAreaPath('tx'));
+  readonly gridY25 = computed(() => (CHART_H * 0.25).toFixed(1));
+  readonly gridY50 = computed(() => (CHART_H * 0.5).toFixed(1));
+  readonly gridY75 = computed(() => (CHART_H * 0.75).toFixed(1));
+  readonly labelPeak = computed(() => this.fmtBps(this.peakBps()));
+  readonly labelHalf = computed(() => this.fmtBps(this.peakBps() / 2));
+  readonly windowSeconds = computed(() => this.history().length * POLL_INTERVAL_S);
 
   ngOnInit(): void {
-    this.load();
-  }
-
-  load(): void {
-    this.loading.set(true);
-    this.lan.getWANCounters().subscribe({
-      next: (d) => { this.wanCounters.set(d as AnyRecord); this.loading.set(false); },
-      error: (err: ErrorResponse) => { this.error.set(err.detail); this.loading.set(false); },
-    });
-    this.lan.getSaturationResults().subscribe({
-      next: (d) => this.saturation.set(d as AnyRecord),
-    });
-    this.lan.getInterfacesNames().subscribe({
-      next: (d) => {
-        const list = this.extractList(d);
-        this.interfaces.set(list.map((i: AnyRecord) => String(i['name'] ?? i)));
-      },
-    });
-  }
-
-  runStats(): void {
-    if (this.statsForm.invalid) return;
-    const v = this.statsForm.value;
-    this.statsLoading.set(true);
-    this.lan.getStats({
-      seconds: Number(v.seconds),
-      numberOfReadings: Number(v.numberOfReadings),
-      interfaceNames: String(v.interfaceNames).split(',').map((s) => s.trim()),
-    }).subscribe({
-      next: (d) => { this.statsResult.set(d as AnyRecord); this.statsLoading.set(false); },
-      error: (err: ErrorResponse) => { this.error.set(err.detail); this.statsLoading.set(false); },
-    });
-  }
-
-  startMonitoring(): void {
-    if (this.monitorForm.invalid) return;
-    const v = this.monitorForm.value;
-    this.lan.startInterfaceMonitoring({ duration: Number(v.duration), interval: Number(v.interval) })
-      .subscribe({
-        next: () => this.monitoring.set(true),
-        error: (err: ErrorResponse) => this.error.set(err.detail),
-      });
-  }
-
-  stopMonitoring(): void {
-    this.lan.stopInterfaceMonitoring().subscribe({
-      next: () => this.monitoring.set(false),
-      error: (err: ErrorResponse) => this.error.set(err.detail),
-    });
-  }
-
-  entries(obj: AnyRecord | null): [string, unknown][] {
-    if (!obj) return [];
-    const d = obj['data'] ?? obj['status'] ?? obj;
-    if (typeof d === 'object' && d !== null) return Object.entries(d as AnyRecord);
-    return [];
-  }
-
-  private extractList(data: unknown): AnyRecord[] {
-    const r = data as AnyRecord;
-    const inner = r?.['data'] ?? r?.['status'] ?? r;
-    if (Array.isArray(inner)) return inner;
-    if (typeof inner === 'object' && inner !== null) {
-      const first = Object.values(inner as AnyRecord)[0];
-      if (Array.isArray(first)) return first;
+    if (isPlatformBrowser(this.platformId)) {
+      // Idempotent — only opens the WS if not already connected
+      this.trafficWs.connect();
     }
-    return [];
   }
+
+  private buildLinePath(type: 'rx' | 'tx'): string {
+    const h = this.history();
+    if (h.length < 2) return '';
+    const max = this.peakBps();
+    return h.map((p, i) => {
+      const x = (i / (MAX_POINTS - 1)) * CHART_W;
+      const val = type === 'rx' ? p.rxBps : p.txBps;
+      const y = CHART_H - (val / max) * (CHART_H - 8);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(' ');
+  }
+
+  private buildAreaPath(type: 'rx' | 'tx'): string {
+    const h = this.history();
+    if (h.length < 2) return '';
+    const max = this.peakBps();
+    const pts = h.map((p, i) => {
+      const x = (i / (MAX_POINTS - 1)) * CHART_W;
+      const val = type === 'rx' ? p.rxBps : p.txBps;
+      const y = CHART_H - (val / max) * (CHART_H - 8);
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    });
+    const lastX = ((h.length - 1) / (MAX_POINTS - 1) * CHART_W).toFixed(1);
+    return `0,${CHART_H} ${pts.join(' ')} ${lastX},${CHART_H}`;
+  }
+
+  fmtBps(bps: number): string {
+    if (bps < 1024) return `${bps.toFixed(0)} B/s`;
+    if (bps < 1024 * 1024) return `${(bps / 1024).toFixed(1)} KB/s`;
+    return `${(bps / 1024 / 1024).toFixed(2)} MB/s`;
+  }
+
 }

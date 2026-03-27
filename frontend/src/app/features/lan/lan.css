@@ -1,11 +1,117 @@
-.stats-result {
+/* Chart legend */
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.legend-item {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.legend-rx { color: #3b82f6; }
+.legend-tx { color: #f97316; }
+
+/* Stats row above chart */
+.chart-stats {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.chart-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chart-stat--muted .chart-stat__value {
+  color: var(--color-text-muted, #888);
+}
+
+.chart-stat__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted, #888);
+}
+
+.chart-stat__value {
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-stat__value--rx { color: #3b82f6; }
+.chart-stat__value--tx { color: #f97316; }
+
+/* Chart container */
+.chart-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
   background: var(--color-content-bg);
   border: 1px solid var(--color-surface-border);
   border-radius: var(--radius);
-  padding: 12px;
+  overflow: hidden;
+  min-height: 336px;
+}
+
+.chart-y-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 4px 4px 8px;
+  font-size: 10px;
+  color: var(--color-text-muted, #888);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chart-svg {
+  flex: 1;
+  display: block;
+  height: 320px;
+  width: 100%;
+}
+
+/* Waiting state */
+.chart-waiting {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 32px 16px;
+  color: var(--color-text-muted, #888);
+  font-size: 14px;
+}
+
+.chart-waiting__icon {
+  font-size: 28px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.chart-waiting__sub {
   font-size: 12px;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  word-break: break-all;
-  margin-top: 12px;
+  opacity: 0.7;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Footer */
+.chart-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--color-text-muted, #888);
 }

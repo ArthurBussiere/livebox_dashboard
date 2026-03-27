@@ -6,7 +6,12 @@
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
-      "args": ["main:app", "--reload", "--port", "4350"],
+      "args": [
+        "main:app",
+        "--reload",
+        "--port",
+        "4350"
+      ],
       "cwd": "${workspaceFolder}/backend",
       "python": "${workspaceFolder}/backend/.venv/bin/python",
       "envFile": "${workspaceFolder}/.env",
@@ -35,6 +40,8 @@
       "request": "launch",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}/frontend/src",
+      "profileDir": "C:\\Users\\Arthur\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\fuwxhy64.dev-edition-default",
+      "keepProfileChanges": true,
       "preLaunchTask": "ng serve",
       "postDebugTask": "stop ng serve",
       "pathMappings": [
@@ -48,11 +55,17 @@
   "compounds": [
     {
       "name": "Full Stack (Chrome)",
-      "configurations": ["Backend (FastAPI)", "Frontend Chrome (Angular)"]
+      "configurations": [
+        "Backend (FastAPI)",
+        "Frontend Chrome (Angular)"
+      ]
     },
     {
       "name": "Full Stack (Firefox)",
-      "configurations": ["Backend (FastAPI)", "Frontend Firefox (Angular)"]
+      "configurations": [
+        "Backend (FastAPI)",
+        "Frontend Firefox (Angular)"
+      ]
     }
   ]
 }

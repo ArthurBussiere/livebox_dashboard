@@ -1,112 +1,96 @@
 <div class="page">
   <div class="page-header">
     <h1 class="page-title">LAN Stats</h1>
-    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
   </div>
 
-  <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
-
-  @if (loading()) {
-    <div class="loading-center"><app-loading-spinner /></div>
-  } @else {
-    <div class="cards-grid">
-
-      <!-- WAN Counters -->
-      <div class="card">
-        <div class="card__header"><h2 class="card__title">WAN Counters</h2></div>
-        <div class="card__body">
-          @if (entries(wanCounters()).length) {
-            <table class="kv">
-              @for (e of entries(wanCounters()); track e[0]) {
-                <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
-              }
-            </table>
-          } @else {
-            <p class="text-muted">No data.</p>
-          }
+  <!-- Real-time traffic chart -->
+  <div class="card">
+    <div class="card__header">
+      <h2 class="card__title">Trafic en temps réel</h2>
+      <div class="chart-legend">
+        <span class="legend-item legend-rx">&#9644; Download (RX)</span>
+        <span class="legend-item legend-tx">&#9644; Upload (TX)</span>
+      </div>
+    </div>
+    <div class="card__body">
+      <div class="chart-stats">
+        <div class="chart-stat">
+          <span class="chart-stat__label">↓ Download</span>
+          <span class="chart-stat__value chart-stat__value--rx">{{ fmtBps(currentRx()) }}</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat__label">↑ Upload</span>
+          <span class="chart-stat__value chart-stat__value--tx">{{ fmtBps(currentTx()) }}</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat__label">P95</span>
+          <span class="chart-stat__value">{{ labelPeak() }}</span>
+        </div>
+        <div class="chart-stat chart-stat--muted">
+          <span class="chart-stat__label">Polling</span>
+          <span class="chart-stat__value">1 s</span>
         </div>
       </div>
 
-      <!-- Saturation -->
-      <div class="card">
-        <div class="card__header"><h2 class="card__title">Saturation</h2></div>
-        <div class="card__body">
-          @if (entries(saturation()).length) {
-            <table class="kv">
-              @for (e of entries(saturation()); track e[0]) {
-                <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
-              }
-            </table>
-          } @else {
-            <p class="text-muted">No saturation data.</p>
-          }
-        </div>
-      </div>
-    </div>
+      <div class="chart-wrapper">
+        @if (history().length < 2) {
+          <div class="chart-waiting">
+            <div class="chart-waiting__icon">〜</div>
+            <div>Collecte des données en cours…</div>
+            <div class="chart-waiting__sub">Polling toutes les secondes</div>
+          </div>
+        } @else {
+          <div class="chart-y-labels">
+            <span>{{ labelPeak() }}</span>
+            <span>{{ labelHalf() }}</span>
+            <span>0</span>
+          </div>
+          <svg [attr.viewBox]="'0 0 ' + chartW + ' ' + chartH" class="chart-svg" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-rx" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3" />
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0" />
+              </linearGradient>
+              <linearGradient id="grad-tx" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f97316" stop-opacity="0.3" />
+                <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
+              </linearGradient>
+              <clipPath id="chart-clip">
+                <rect x="0" y="0" [attr.width]="chartW" [attr.height]="chartH" />
+              </clipPath>
+            </defs>
 
-    <!-- Monitoring -->
-    <div class="card">
-      <div class="card__header">
-        <h2 class="card__title">Interface Monitoring</h2>
-        @if (monitoring()) {
-          <span class="badge badge--success">Active</span>
+            <!-- Grid lines -->
+            <line x1="0" y1="0.5" [attr.x2]="chartW" y2="0.5"
+              stroke="var(--color-surface-border)" stroke-width="0.5" stroke-dasharray="4 4" />
+            <line x1="0" [attr.y1]="gridY25()" [attr.x2]="chartW" [attr.y2]="gridY25()"
+              stroke="var(--color-surface-border)" stroke-width="0.5" stroke-dasharray="4 4" />
+            <line x1="0" [attr.y1]="gridY50()" [attr.x2]="chartW" [attr.y2]="gridY50()"
+              stroke="var(--color-surface-border)" stroke-width="0.5" stroke-dasharray="4 4" />
+            <line x1="0" [attr.y1]="gridY75()" [attr.x2]="chartW" [attr.y2]="gridY75()"
+              stroke="var(--color-surface-border)" stroke-width="0.5" stroke-dasharray="4 4" />
+
+            <g clip-path="url(#chart-clip)">
+              <!-- RX area -->
+              <polygon [attr.points]="rxAreaPath()" fill="url(#grad-rx)" />
+              <!-- TX area -->
+              <polygon [attr.points]="txAreaPath()" fill="url(#grad-tx)" />
+
+              <!-- RX line -->
+              <polyline [attr.points]="rxLinePath()" fill="none" stroke="#3b82f6" stroke-width="2"
+                stroke-linejoin="round" stroke-linecap="round" />
+              <!-- TX line -->
+              <polyline [attr.points]="txLinePath()" fill="none" stroke="#f97316" stroke-width="2"
+                stroke-linejoin="round" stroke-linecap="round" />
+            </g>
+          </svg>
         }
       </div>
-      <div class="card__body">
-        <form class="form" [formGroup]="monitorForm">
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">Duration (s)</label>
-              <input class="form-input" type="number" formControlName="duration">
-            </div>
-            <div class="form-field">
-              <label class="form-label">Interval (s)</label>
-              <input class="form-input" type="number" formControlName="interval">
-            </div>
-          </div>
-          <div class="form-actions">
-            @if (!monitoring()) {
-              <button class="btn btn--primary" type="button" (click)="startMonitoring()">Start Monitoring</button>
-            } @else {
-              <button class="btn btn--danger" type="button" (click)="stopMonitoring()">Stop Monitoring</button>
-            }
-          </div>
-        </form>
+
+      <div class="chart-footer">
+        <span>← {{ windowSeconds() }} s</span>
+        <span>Maintenant →</span>
       </div>
     </div>
-
-    <!-- Stats query -->
-    <div class="card">
-      <div class="card__header"><h2 class="card__title">Interface Stats</h2></div>
-      <div class="card__body">
-        <form class="form" [formGroup]="statsForm" (ngSubmit)="runStats()">
-          <div class="form-row">
-            <div class="form-field">
-              <label class="form-label">Interval (s)</label>
-              <input class="form-input" type="number" formControlName="seconds">
-            </div>
-            <div class="form-field">
-              <label class="form-label">Number of readings</label>
-              <input class="form-input" type="number" formControlName="numberOfReadings">
-            </div>
-          </div>
-          <div class="form-field">
-            <label class="form-label">Interface names (comma-separated)</label>
-            <input class="form-input" formControlName="interfaceNames" placeholder="eth0, eth1">
-            <span class="form-hint">Available: {{ interfaces().join(', ') || '—' }}</span>
-          </div>
-          <div class="form-actions">
-            <button class="btn btn--primary" type="submit" [disabled]="statsForm.invalid || statsLoading()">
-              {{ statsLoading() ? 'Loading…' : 'Get Stats' }}
-            </button>
-          </div>
-        </form>
-
-        @if (statsResult()) {
-          <hr class="divider" style="margin-top:16px">
-          <pre class="stats-result">{{ statsResult() | json }}</pre>
-        }
-      </div>
-    </div>
-  }
+  </div>
 </div>

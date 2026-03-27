@@ -202,6 +202,22 @@ class LiveboxSession:
         logger.debug("%s.%s → %s", service, method, data)
         return data
 
+    async def raw_call(self, service: str, method: str, parameters: dict | None = None) -> dict:
+        """Like call() but returns the raw Livebox JSON without raising on errors."""
+        if parameters is None:
+            parameters = {}
+        payload = {"service": service, "method": method, "parameters": parameters}
+        if not self._token:
+            await self.signin()
+        response = await self._post(payload)
+        if response.status_code == 401:
+            await self.signin()
+            response = await self._post(payload)
+        try:
+            return response.json()
+        except Exception:
+            return {"http_status": response.status_code, "text": response.text}
+
     async def close(self) -> None:
         """Release the underlying HTTP client."""
         if self._client:

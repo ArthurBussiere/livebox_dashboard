@@ -16,9 +16,9 @@ export interface WifiStatusRequest {
 }
 
 export interface WifiPairingRequest {
-  clientPin: string;
+  clientPIN: string;
 }
 
 export interface GuestConfig {
-  enable: boolean;
+  Enable: boolean;
 }

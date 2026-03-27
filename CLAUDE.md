@@ -1,3 +1,4 @@
+
 # Livebox Project
 
 Full-stack Orange Livebox control UI. FastAPI backend proxies calls to the Livebox router's JSON-RPC API; Angular 21 frontend served as static files by the same backend in production.

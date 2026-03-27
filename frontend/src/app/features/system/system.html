@@ -12,7 +12,6 @@
     <div class="tabs">
       <button class="tab" [class.tab--active]="tab()==='ipv6'" (click)="tab.set('ipv6')">IPv6</button>
       <button class="tab" [class.tab--active]="tab()==='device'" (click)="tab.set('device')">Device</button>
-      <button class="tab" [class.tab--active]="tab()==='diag'" (click)="tab.set('diag')">Diagnostics</button>
       <button class="tab" [class.tab--active]="tab()==='control'" (click)="tab.set('control')">Control</button>
     </div>
 
@@ -27,10 +26,6 @@
                 <input class="toggle__track" type="checkbox" formControlName="enable">
                 <span class="toggle__label">IPv6 Enabled</span>
               </label>
-              <label class="toggle">
-                <input class="toggle__track" type="checkbox" formControlName="userRequested">
-                <span class="toggle__label">User Requested</span>
-              </label>
               <div class="form-actions">
                 <button class="btn btn--primary" type="submit" [disabled]="saving()">
                   {{ saving() ? 'Saving…' : 'Save' }}
@@ -42,54 +37,18 @@
       }
 
       @case ('device') {
-        <div class="cards-grid">
-          <div class="card">
-            <div class="card__header"><h2 class="card__title">Device Info</h2></div>
-            <div class="card__body">
-              <table class="kv">
-                @for (e of entries(deviceInfo()); track e[0]) {
-                  <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
-                }
-              </table>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card__header"><h2 class="card__title">Firmware</h2></div>
-            <div class="card__body">
-              <button class="btn btn--ghost" (click)="checkFirmware()">Check for Upgrades</button>
-              @if (firmwareInfo()) {
-                <table class="kv" style="margin-top:12px">
-                  @for (e of entries(firmwareInfo()); track e[0]) {
-                    <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
-                  }
-                </table>
-              }
-            </div>
-          </div>
-        </div>
-      }
-
-      @case ('diag') {
         <div class="card">
-          <div class="card__header"><h2 class="card__title">Diagnostics</h2></div>
-          <div class="table-wrap">
-            <table class="table">
-              <thead><tr><th>ID</th><th>Name</th><th>Description</th><th></th></tr></thead>
-              <tbody>
-                @if (!diagnostics().length) { <tr><td colspan="4" class="table--empty">No diagnostics available.</td></tr> }
-                @for (d of diagnostics(); track d['Id'] ?? $index) {
-                  <tr>
-                    <td class="mono">{{ d['Id'] ?? d['id'] ?? '—' }}</td>
-                    <td>{{ d['Name'] ?? d['name'] ?? '—' }}</td>
-                    <td>{{ d['Description'] ?? d['description'] ?? '—' }}</td>
-                    <td><button class="btn btn--ghost btn--sm" (click)="runDiag(d['Id'] ?? d['id'])">Run</button></td>
-                  </tr>
-                }
-              </tbody>
+          <div class="card__header"><h2 class="card__title">Device Info</h2></div>
+          <div class="card__body">
+            <table class="kv">
+              @for (e of entries(deviceInfo()); track e[0]) {
+                <tr><td>{{ e[0] }}</td><td>{{ e[1] }}</td></tr>
+              }
             </table>
           </div>
         </div>
       }
+
 
       @case ('control') {
         <div class="cards-grid" style="max-width:600px">

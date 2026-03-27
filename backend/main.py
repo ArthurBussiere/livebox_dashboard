@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
 from core.auth import require_auth
-from routers import auth, device, dhcp, devices, dyndns, firewall, lan, nmc, phone, system, wifi
+from routers import auth, device, dhcp, devices, dyndns, firewall, lan, nmc, phone, system, wifi, ws
 
 logger = logging.getLogger(__name__)
 
@@ -94,6 +94,8 @@ app.include_router(nmc.router,      prefix="/api/nmc",      tags=["NMC"],      *
 app.include_router(dhcp.router,     prefix="/api/dhcp",     tags=["DHCP"],     **_protected)
 app.include_router(devices.router,  prefix="/api/devices",  tags=["Devices"],  **_protected)
 app.include_router(system.router,   prefix="/api/system",   tags=["System"],   **_protected)
+# WebSocket — handles its own auth via ?token= query param
+app.include_router(ws.router,       prefix="/api/ws",       tags=["WebSocket"])
 
 
 # ---------------------------------------------------------------------------

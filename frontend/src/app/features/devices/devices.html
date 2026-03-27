@@ -57,7 +57,7 @@
                     </div>
                   } @else {
                     <span class="device-name" (click)="startEdit(device)">
-                      {{ device['Name'] || '(unnamed)' }}
+                      {{ getDisplayName(device) || '(unnamed)' }}
                       <span class="edit-hint">✎</span>
                     </span>
                   }
