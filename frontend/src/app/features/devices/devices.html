@@ -39,13 +39,14 @@
               <th>{{ 'devices.ipAddress' | translate }}</th>
               <th>{{ 'devices.macAddress' | translate }}</th>
               <th>{{ 'devices.type' | translate }}</th>
+              <th>{{ 'devices.connection' | translate }}</th>
               <th>{{ 'common.status' | translate }}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             @if (!filtered().length) {
-              <tr><td colspan="6" class="table--empty">{{ 'devices.noDevices' | translate }}</td></tr>
+              <tr><td colspan="7" class="table--empty">{{ 'devices.noDevices' | translate }}</td></tr>
             }
             @for (device of filtered(); track device['Key'] ?? $index) {
               <tr>
@@ -53,6 +54,15 @@
                 <td class="mono">{{ device['IPAddress'] ?? '—' }}</td>
                 <td class="mono">{{ device['PhysAddress'] ?? '—' }}</td>
                 <td>{{ device['DeviceType'] ?? '—' }}</td>
+                <td>
+                  @if (getConnectionType(device); as conn) {
+                    <app-status-badge
+                      [type]="conn === 'devices.wifi' ? 'info' : 'muted'"
+                      [label]="conn | translate" />
+                  } @else {
+                    —
+                  }
+                </td>
                 <td>
                   <app-status-badge
                     [type]="device['Active'] ? 'success' : 'muted'"

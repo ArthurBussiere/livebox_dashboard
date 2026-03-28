@@ -78,6 +78,13 @@ export default class Devices implements OnInit {
     return gui ? gui['Name'] : (device['Name'] ?? '');
   }
 
+  getConnectionType(device: AnyRecord): 'devices.wifi' | 'devices.lan' | null {
+    const iface = String(device['Layer2Interface'] ?? '');
+    if (iface.startsWith('wl')) return 'devices.wifi';
+    if (iface.startsWith('eth')) return 'devices.lan';
+    return null;
+  }
+
   deleteMsg(): string {
     const t = this.deleteTarget();
     return this.i18n.t('devices.removeMsg', t?.['Name'] || t?.['IPAddress'] || this.i18n.t('devices.thisDevice'));
