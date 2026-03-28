@@ -4,9 +4,13 @@
     {
       "label": "ng serve",
       "type": "shell",
-      "command": "npm start",
+      "command": "npm",
+      "args": ["start"],
       "options": {
-        "cwd": "${workspaceFolder}/frontend"
+        "cwd": "${workspaceFolder}/frontend",
+        "env": {
+          "PATH": "/home/arthur/.nvm/versions/node/v24.14.0/bin:${env:PATH}"
+        }
       },
       "isBackground": true,
       "problemMatcher": {

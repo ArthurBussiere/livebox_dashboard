@@ -39,17 +39,11 @@
       "type": "firefox",
       "request": "launch",
       "url": "http://localhost:4200",
-      "webRoot": "${workspaceFolder}/frontend/src",
+      "webRoot": "${workspaceFolder}/frontend",
       "profileDir": "C:\\Users\\Arthur\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\fuwxhy64.dev-edition-default",
       "keepProfileChanges": true,
       "preLaunchTask": "ng serve",
-      "postDebugTask": "stop ng serve",
-      "pathMappings": [
-        {
-          "url": "webpack:///",
-          "path": "${workspaceFolder}/frontend/"
-        }
-      ]
+      "postDebugTask": "stop ng serve"
     }
   ],
   "compounds": [
