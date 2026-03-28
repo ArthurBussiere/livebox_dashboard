@@ -27,8 +27,6 @@ export default class Devices implements OnInit {
   readonly search = signal('');
   readonly statusFilter = signal<'all' | 'active' | 'inactive'>('all');
   readonly typeFilter = signal('');
-  readonly editingKey = signal<string | null>(null);
-  readonly editName = signal('');
   readonly deleteTarget = signal<AnyRecord | null>(null);
 
   readonly deviceTypes = computed(() => {
@@ -75,31 +73,6 @@ export default class Devices implements OnInit {
     const names: AnyRecord[] = device['Names'] ?? [];
     const gui = names.find((n: AnyRecord) => n['Source'] === 'GUI');
     return gui ? gui['Name'] : (device['Name'] ?? '');
-  }
-
-  startEdit(device: AnyRecord): void {
-    this.editingKey.set(device['Key']);
-    this.editName.set(this.getDisplayName(device));
-  }
-
-  cancelEdit(): void { this.editingKey.set(null); }
-
-  saveName(device: AnyRecord): void {
-    const name = this.editName().trim();
-    if (!name) return;
-    this.devicesService.setName(device['Key'], { name, source: 'GUI' }).subscribe({
-      next: () => {
-        this.allDevices.update((list) =>
-          list.map((d) => {
-            if (d['Key'] !== device['Key']) return d;
-            const names: AnyRecord[] = (d['Names'] ?? []).filter((n: AnyRecord) => n['Source'] !== 'GUI');
-            return { ...d, Names: [...names, { Name: name, Source: 'GUI' }] };
-          }),
-        );
-        this.editingKey.set(null);
-      },
-      error: (err: ErrorResponse) => this.error.set(err.detail),
-    });
   }
 
   confirmDelete(device: AnyRecord): void { this.deleteTarget.set(device); }

@@ -45,23 +45,7 @@
             }
             @for (device of filtered(); track device['Key'] ?? $index) {
               <tr>
-                <td>
-                  @if (editingKey() === device['Key']) {
-                    <div class="inline-edit">
-                      <input class="form-input" style="width:140px"
-                        [ngModel]="editName()" (ngModelChange)="editName.set($event)"
-                        (keyup.enter)="saveName(device)"
-                        (keyup.escape)="cancelEdit()">
-                      <button class="btn btn--primary btn--sm" (click)="saveName(device)">✓</button>
-                      <button class="btn btn--ghost btn--sm" (click)="cancelEdit()">✕</button>
-                    </div>
-                  } @else {
-                    <span class="device-name" (click)="startEdit(device)">
-                      {{ getDisplayName(device) || '(unnamed)' }}
-                      <span class="edit-hint">✎</span>
-                    </span>
-                  }
-                </td>
+                <td>{{ getDisplayName(device) || '(unnamed)' }}</td>
                 <td class="mono">{{ device['IPAddress'] ?? '—' }}</td>
                 <td class="mono">{{ device['PhysAddress'] ?? '—' }}</td>
                 <td>{{ device['DeviceType'] ?? '—' }}</td>
