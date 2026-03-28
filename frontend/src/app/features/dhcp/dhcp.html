@@ -129,18 +129,37 @@
       }
 
       @case ('settings') {
+        <div class="dhcp-settings-info">
+          <p>{{ 'dhcp.settingsDesc' | translate }}</p>
+          <p class="dhcp-settings-info__note">{{ 'dhcp.settingsNote' | translate }}</p>
+        </div>
+
         <div class="cards-grid">
           <div class="card">
-            <div class="card__header"><h2 class="card__title">{{ 'dhcp.leaseTime' | translate }}</h2></div>
+            <div class="card__header"><h2 class="card__title">{{ 'dhcp.dhcpConfig' | translate }}</h2></div>
             <div class="card__body">
-              <form class="form" [formGroup]="leaseTimeForm" (ngSubmit)="saveLeaseTime()" style="max-width:320px">
+              <form class="form" [formGroup]="dhcpConfigForm" (ngSubmit)="saveDhcpConfig()" style="max-width:320px">
+                <div class="form-field">
+                  <label class="toggle">
+                    <input class="toggle__track" type="checkbox" formControlName="DHCPEnable">
+                    <span class="toggle__label">{{ 'dhcp.dhcpEnable' | translate }}</span>
+                  </label>
+                </div>
+                <div class="form-field">
+                  <label class="form-label">{{ 'dhcp.minAddress' | translate }}</label>
+                  <input class="form-input" formControlName="DHCPMinAddress" placeholder="192.168.1.100">
+                </div>
+                <div class="form-field">
+                  <label class="form-label">{{ 'dhcp.maxAddress' | translate }}</label>
+                  <input class="form-input" formControlName="DHCPMaxAddress" placeholder="192.168.1.200">
+                </div>
                 <div class="form-field">
                   <label class="form-label">{{ 'dhcp.leaseTimeSeconds' | translate }}</label>
                   <input class="form-input" type="number" formControlName="leaseTime">
                   <span class="form-hint">{{ 'dhcp.leaseTimeHint' | translate }}</span>
                 </div>
                 <div class="form-actions">
-                  <button class="btn btn--primary" type="submit" [disabled]="saving()">
+                  <button class="btn btn--primary" type="submit" [disabled]="dhcpConfigForm.invalid || saving() || !lanConfig()">
                     {{ saving() ? ('common.saving' | translate) : ('common.save' | translate) }}
                   </button>
                 </div>

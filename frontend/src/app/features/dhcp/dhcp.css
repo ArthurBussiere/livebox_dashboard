@@ -1,1 +1,19 @@
 .mono { font-family: monospace; font-size: 12px; }
+
+.dhcp-settings-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+.dhcp-settings-info p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.dhcp-settings-info__note {
+  font-style: italic;
+}

@@ -233,26 +233,48 @@
   cursor: not-allowed;
 }
 
+/* Hidden on desktop, shown on mobile */
+.app-header__icon--mobile-only {
+  display: none;
+}
+
 /* ── Mobile header (< 768px) ───────────────────────────────── */
 @media (max-width: 767px) {
   .app-header {
-    padding: 0 12px;
+    padding: 0 8px;
   }
 
   .app-header__brand {
     width: auto;
   }
 
-  /* Hide WAN & Devices groups and their dividers */
-  .app-header__group--secondary,
-  .app-header__divider--secondary {
+  /* Tighten all dividers */
+  .app-header__divider {
+    margin: 0 8px;
+  }
+
+  /* Keep WAN & Devices but compact: hide label, sub-text and tags */
+  .app-header__group--secondary .app-header__label,
+  .app-header__group--secondary .app-header__sub,
+  .app-header__group--secondary .app-header__tag {
     display: none;
+  }
+
+  .app-header__icon--mobile-only {
+    display: block;
   }
 
   /* Hide WiFi SSID/channel text — keep only the toggle */
   .app-header__label--hide-mobile,
   .app-header__value--hide-mobile,
   .app-header__sub--hide-mobile {
+    display: none;
+  }
+}
+
+/* ── Very small screens (< 480px) ─────────────────────────── */
+@media (max-width: 479px) {
+  .app-header__title {
     display: none;
   }
 }

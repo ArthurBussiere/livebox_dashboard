@@ -5,8 +5,9 @@ import { TranslationService } from '../../core/i18n/translation.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DhcpService } from '../../services/dhcp.service';
+import { NmcService } from '../../services/nmc.service';
 import { DeviceRegistryService } from '../../core/device-registry.service';
-import { ErrorResponse } from '../../models';
+import { ErrorResponse, LanIPConfig } from '../../models';
 import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 import { ErrorBanner } from '../../shared/error-banner/error-banner';
 import { StatusBadge } from '../../shared/status-badge/status-badge';
@@ -25,6 +26,7 @@ type DhcpTab = 'leases' | 'static' | 'settings';
 })
 export default class Dhcp implements OnInit {
   private readonly dhcp = inject(DhcpService);
+  private readonly nmc = inject(NmcService);
   private readonly fb = inject(FormBuilder);
   readonly registry = inject(DeviceRegistryService);
   readonly i18n = inject(TranslationService);
@@ -37,6 +39,7 @@ export default class Dhcp implements OnInit {
   readonly leases = signal<AnyRecord[]>([]);
   readonly staticLeases = signal<AnyRecord[]>([]);
   readonly doraStats = signal<AnyRecord | null>(null);
+  readonly lanConfig = signal<LanIPConfig | null>(null);
   readonly showAddStatic = signal(false);
   readonly deleteTarget = signal<AnyRecord | null>(null);
 
@@ -51,7 +54,10 @@ export default class Dhcp implements OnInit {
     ipAddress: ['', Validators.required],
   });
 
-  readonly leaseTimeForm = this.fb.group({
+  readonly dhcpConfigForm = this.fb.group({
+    DHCPEnable: [true],
+    DHCPMinAddress: ['', Validators.required],
+    DHCPMaxAddress: ['', Validators.required],
     leaseTime: [86400, Validators.required],
   });
 
@@ -65,11 +71,22 @@ export default class Dhcp implements OnInit {
       leases: this.dhcp.getLeases().pipe(catchError(() => of(null))),
       staticLeases: this.dhcp.getStaticLeases().pipe(catchError(() => of(null))),
       dora: this.dhcp.getDoraCyclesDetails().pipe(catchError(() => of(null))),
+      lanIp: this.nmc.getLANIP().pipe(catchError(() => of(null))),
     }).subscribe({
-      next: ({ leases, staticLeases, dora }) => {
+      next: ({ leases, staticLeases, dora, lanIp }) => {
         this.leases.set(this.extractList(leases));
         this.staticLeases.set(this.extractList(staticLeases));
         this.doraStats.set(this.extract(dora));
+        const lan = this.extract(lanIp) as LanIPConfig | null;
+        if (lan) {
+          this.lanConfig.set(lan);
+          this.dhcpConfigForm.patchValue({
+            DHCPEnable: !!lan.DHCPEnable,
+            DHCPMinAddress: lan.DHCPMinAddress ?? '',
+            DHCPMaxAddress: lan.DHCPMaxAddress ?? '',
+            leaseTime: lan.LeaseTime ?? 86400,
+          });
+        }
         this.loading.set(false);
       },
       error: (err: ErrorResponse) => { this.error.set(err.detail); this.loading.set(false); },
@@ -128,10 +145,19 @@ export default class Dhcp implements OnInit {
     });
   }
 
-  saveLeaseTime(): void {
-    if (this.leaseTimeForm.invalid) return;
+  saveDhcpConfig(): void {
+    const cfg = this.lanConfig();
+    if (!cfg || this.dhcpConfigForm.invalid) return;
     this.saving.set(true);
-    this.dhcp.setLeaseTime({ LeaseTime: this.leaseTimeForm.value.leaseTime! }).subscribe({
+    const v = this.dhcpConfigForm.value;
+    this.nmc.setLANIP({
+      Address: cfg.Address,
+      Netmask: cfg.Netmask,
+      DHCPEnable: !!v.DHCPEnable,
+      DHCPMinAddress: v.DHCPMinAddress!,
+      DHCPMaxAddress: v.DHCPMaxAddress!,
+      LeaseTime: v.leaseTime ?? undefined,
+    }).subscribe({
       next: () => this.saving.set(false),
       error: (err: ErrorResponse) => { this.error.set(err.detail); this.saving.set(false); },
     });

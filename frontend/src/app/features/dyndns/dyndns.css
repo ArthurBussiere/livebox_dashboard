@@ -1,1 +1,15 @@
 .toggles-row { display: flex; gap: 32px; flex-wrap: wrap; }
+
+.dyndns-info {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dyndns-info p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}

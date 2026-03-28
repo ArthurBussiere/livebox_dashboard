@@ -36,7 +36,6 @@ export default class Firewall implements OnInit {
   readonly tab = signal<FwTab>('portforwarding');
 
   readonly ipv4Level = signal<FirewallLevel>('Medium');
-  readonly ipv6Level = signal<FirewallLevel>('Medium');
   readonly portRules = signal<AnyRecord[]>([]);
   readonly dmzRules = signal<AnyRecord[]>([]);
 
@@ -44,7 +43,14 @@ export default class Firewall implements OnInit {
   readonly showDmzForm = signal(false);
   readonly deleteTarget = signal<{ type: string; item: AnyRecord } | null>(null);
 
-  readonly levels: FirewallLevel[] = ['Low', 'Medium', 'High', 'Custom'];
+  readonly levels: FirewallLevel[] = ['Low', 'Medium', 'High'];
+
+  levelLabel(l: FirewallLevel): string {
+    if (l === 'Low') return this.i18n.t('firewall.levelLow');
+    if (l === 'Medium') return this.i18n.t('firewall.levelMedium');
+    if (l === 'High') return this.i18n.t('firewall.levelHigh');
+    return l;
+  }
   readonly protocols: Protocol[] = ['TCP', 'UDP', 'TCP,UDP'];
 
   private static readonly PROTO_TO_NUM: Record<string, string> = { TCP: '6', UDP: '17' };
@@ -84,13 +90,11 @@ export default class Firewall implements OnInit {
     this.loading.set(true);
     forkJoin({
       level: this.fw.getLevel(),
-      ipv6level: this.fw.getIPv6Level(),
       port: this.fw.getPortForwarding(),
       dmz: this.fw.getDMZ(),
     }).subscribe({
-      next: ({ level, ipv6level, port, dmz }) => {
+      next: ({ level, port, dmz }) => {
         this.ipv4Level.set((this.extract(level)?.['Level'] as FirewallLevel) ?? 'Medium');
-        this.ipv6Level.set((this.extract(ipv6level)?.['Level'] as FirewallLevel) ?? 'Medium');
         this.portRules.set(this.extractList(port));
         this.dmzRules.set(this.extractList(dmz));
         this.loading.set(false);
@@ -103,7 +107,7 @@ export default class Firewall implements OnInit {
     this.saving.set(true);
     forkJoin({
       v4: this.fw.setLevel({ level: this.ipv4Level() }),
-      v6: this.fw.setIPv6Level({ level: this.ipv6Level() }),
+      v6: this.fw.setIPv6Level({ level: this.ipv4Level() }),
     }).subscribe({
       next: () => {
         this.saving.set(false);

@@ -18,28 +18,48 @@
     @switch (tab()) {
 
       @case ('level') {
-        <div class="card" style="max-width:480px">
-          <div class="card__header"><h2 class="card__title">{{ 'firewall.levelCard' | translate }}</h2></div>
+        <div class="card level-card">
+          <div class="card__header">
+            <h2 class="card__title">{{ 'firewall.levelCard' | translate }}</h2>
+          </div>
           <div class="card__body">
-            <div class="form">
-              <div class="form-field">
-                <label class="form-label">{{ 'firewall.ipv4Level' | translate }}</label>
-                <select class="form-select" [ngModel]="ipv4Level()" (ngModelChange)="ipv4Level.set($event)">
-                  @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
-                </select>
-              </div>
-              <div class="form-field">
-                <label class="form-label">{{ 'firewall.ipv6Level' | translate }}</label>
-                <select class="form-select" [ngModel]="ipv6Level()" (ngModelChange)="ipv6Level.set($event)">
-                  @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
-                </select>
-              </div>
-              <div class="form-actions">
-                <button class="btn btn--primary" (click)="saveLevel()" [disabled]="saving()">
-                  {{ saving() ? ('common.saving' | translate) : ('firewall.applyCommit' | translate) }}
+            <div class="level-picker">
+              @for (l of levels; track l) {
+                <button class="level-picker__btn level-picker__btn--{{ l.toLowerCase() }}"
+                        [class.level-picker__btn--active]="ipv4Level() === l"
+                        (click)="ipv4Level.set(l)">
+                  {{ levelLabel(l) }}
                 </button>
-              </div>
+              }
             </div>
+          </div>
+          <div class="level-guide-section">
+            <p class="level-guide-title">{{ 'firewall.levelsTitle' | translate }}</p>
+            <div class="levels-grid">
+
+              <div class="level-entry">
+                <span class="level-entry__badge level-entry__badge--low">{{ 'firewall.levelLow' | translate }}</span>
+                <p class="level-entry__desc">{{ 'firewall.levelLowDesc' | translate }}</p>
+                <p class="level-entry__warn">{{ 'firewall.levelLowWarn' | translate }}</p>
+              </div>
+
+              <div class="level-entry">
+                <span class="level-entry__badge level-entry__badge--medium">{{ 'firewall.levelMedium' | translate }}</span>
+                <p class="level-entry__desc">{{ 'firewall.levelMediumDesc' | translate }}</p>
+              </div>
+
+              <div class="level-entry">
+                <span class="level-entry__badge level-entry__badge--high">{{ 'firewall.levelHigh' | translate }}</span>
+                <p class="level-entry__desc">{{ 'firewall.levelHighDesc' | translate }}</p>
+                <p class="level-entry__warn">{{ 'firewall.levelHighWarn' | translate }}</p>
+              </div>
+
+            </div>
+          </div>
+          <div class="card__footer">
+            <button class="btn btn--primary" (click)="saveLevel()" [disabled]="saving()">
+              {{ saving() ? ('common.saving' | translate) : ('firewall.applyCommit' | translate) }}
+            </button>
           </div>
         </div>
       }

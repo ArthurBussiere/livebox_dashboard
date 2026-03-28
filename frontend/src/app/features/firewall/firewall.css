@@ -1,1 +1,104 @@
 .mono { font-family: monospace; font-size: 12px; }
+
+.level-card {
+  max-width: 860px;
+}
+
+.level-picker {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-surface-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.level-picker__btn {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--color-surface-border);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.level-picker__btn:last-child {
+  border-right: none;
+}
+
+.level-picker__btn:hover:not(.level-picker__btn--active) {
+  background: var(--color-content-bg);
+  color: var(--color-text);
+}
+
+.level-picker__btn--low.level-picker__btn--active    { background: rgb(239 68 68 / 0.12);  color: #ef4444; font-weight: 700; }
+.level-picker__btn--medium.level-picker__btn--active { background: rgb(34 197 94 / 0.12);  color: #16a34a; font-weight: 700; }
+.level-picker__btn--high.level-picker__btn--active   { background: rgb(245 158 11 / 0.12); color: #d97706; font-weight: 700; }
+
+.level-guide-section {
+  border-top: 1px solid var(--color-surface-border);
+  padding: 16px 20px;
+}
+
+.level-guide-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--color-text-muted);
+  margin: 0 0 12px 0;
+}
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 767px) {
+  .levels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.level-entry {
+  padding: 12px;
+  border: 1px solid var(--color-surface-border);
+  border-radius: 6px;
+  background: var(--color-content-bg);
+}
+
+.level-entry__badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.level-entry__badge--low    { background: rgb(239 68 68 / 0.12);  color: #ef4444; }
+.level-entry__badge--medium { background: rgb(34 197 94 / 0.12);  color: #16a34a; }
+.level-entry__badge--high   { background: rgb(245 158 11 / 0.12); color: #d97706; }
+
+.level-entry__desc,
+.level-entry__warn,
+.level-entry__note {
+  font-size: 12px;
+  line-height: 1.55;
+  margin: 0 0 6px 0;
+}
+
+.level-entry__desc { color: var(--color-text); }
+
+.level-entry__warn {
+  color: var(--color-warning);
+}
+
+.level-entry__desc:last-child,
+.level-entry__warn:last-child {
+  margin-bottom: 0;
+}

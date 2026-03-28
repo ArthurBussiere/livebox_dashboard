@@ -50,11 +50,11 @@
             }
             @for (device of filtered(); track device['Key'] ?? $index) {
               <tr>
-                <td>{{ getDisplayName(device) || ('common.unnamed' | translate) }}</td>
-                <td class="mono">{{ device['IPAddress'] ?? '—' }}</td>
-                <td class="mono">{{ device['PhysAddress'] ?? '—' }}</td>
-                <td>{{ device['DeviceType'] ?? '—' }}</td>
-                <td>
+                <td [attr.data-label]="'common.name' | translate">{{ getDisplayName(device) || ('common.unnamed' | translate) }}</td>
+                <td [attr.data-label]="'devices.ipAddress' | translate" class="mono">{{ device['IPAddress'] ?? '—' }}</td>
+                <td [attr.data-label]="'devices.macAddress' | translate" class="mono">{{ device['PhysAddress'] ?? '—' }}</td>
+                <td [attr.data-label]="'devices.type' | translate">{{ device['DeviceType'] ?? '—' }}</td>
+                <td [attr.data-label]="'devices.connection' | translate">
                   @if (getConnectionType(device); as conn) {
                     <app-status-badge
                       [type]="conn === 'devices.wifi' ? 'info' : 'muted'"
@@ -63,12 +63,12 @@
                     —
                   }
                 </td>
-                <td>
+                <td [attr.data-label]="'common.status' | translate">
                   <app-status-badge
                     [type]="device['Active'] ? 'success' : 'muted'"
                     [label]="device['Active'] ? ('common.active' | translate) : ('common.inactive' | translate)" />
                 </td>
-                <td>
+                <td class="td--action">
                   <button class="btn btn--danger btn--sm" (click)="confirmDelete(device)">{{ 'common.delete' | translate }}</button>
                 </td>
               </tr>

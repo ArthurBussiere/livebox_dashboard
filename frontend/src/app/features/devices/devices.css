@@ -76,3 +76,62 @@
 .device-name:hover .edit-hint { opacity: 1; }
 
 .mono { font-family: monospace; font-size: 12px; }
+
+/* ── Mobile card layout (< 768px) ─────────────────────────── */
+@media (max-width: 767px) {
+  /* Disable horizontal scroll — rows become cards */
+  .table-wrap {
+    overflow-x: visible;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody tr {
+    display: block;
+    border: 1px solid var(--color-surface-border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Override global hover that targets td */
+  .table tbody tr:hover td {
+    background: transparent;
+  }
+
+  .table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--color-surface-border);
+    font-size: 13px;
+  }
+
+  .table td:last-child {
+    border-bottom: none;
+  }
+
+  /* Label injected via data-label */
+  .table td[data-label]::before {
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+    margin-right: 12px;
+  }
+
+  /* Action cell: center the delete button */
+  .table td.td--action {
+    justify-content: flex-end;
+  }
+}

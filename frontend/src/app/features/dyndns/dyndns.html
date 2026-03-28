@@ -6,6 +6,11 @@
 
   <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
 
+  <div class="dyndns-info">
+    <p>{{ 'dyndns.infoDesc' | translate }}</p>
+    <p>{{ 'dyndns.infoExample' | translate }}</p>
+  </div>
+
   @if (loading()) {
     <div class="loading-center"><app-loading-spinner /></div>
   } @else {
