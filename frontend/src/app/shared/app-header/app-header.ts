@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';
+import { Component, inject, computed, effect } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, catchError, of } from 'rxjs';
 import { WifiService } from '../../services/wifi.service';
@@ -8,6 +8,7 @@ import { LayoutService } from '../../core/layout.service';
 import { AuthService } from '../../core/auth.service';
 import { TranslationService } from '../../core/i18n/translation.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import { ThemeService } from '../../core/theme.service';
 import { ErrorResponse } from '../../models';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,6 +22,7 @@ type AnyRecord = Record<string, any>;
 })
 export class AppHeader {
   readonly i18n = inject(TranslationService);
+  readonly theme = inject(ThemeService);
   private readonly registry = inject(DeviceRegistryService);
   private readonly wifiService = inject(WifiService);
   private readonly nmc = inject(NmcService);
@@ -41,7 +43,7 @@ export class AppHeader {
     ),
   );
 
-  readonly wifiEnabled = signal(false);
+  readonly wifiEnabled = this.wifiService.wifiEnabled;
   readonly wifiSsid = computed(() => this.wifiData()?.['SSID'] as string | undefined);
   readonly wifiChannel = computed(() => this.wifiData()?.['Channel'] as string | undefined);
 
@@ -53,7 +55,7 @@ export class AppHeader {
   constructor() {
     effect(() => {
       const data = this.wifiData();
-      if (data != null) this.wifiEnabled.set(!!data['Enable']);
+      if (data != null) this.wifiService.wifiEnabled.set(!!data['Enable']);
     });
   }
 
@@ -62,10 +64,8 @@ export class AppHeader {
   }
 
   toggleWifi(): void {
-    const next = !this.wifiEnabled();
-    this.wifiEnabled.set(next);
-    this.wifiService.set({ Enable: next }).subscribe({
-      error: (err: ErrorResponse) => { this.wifiEnabled.set(!next); console.error(err.detail); },
+    this.wifiService.toggle().subscribe({
+      error: (err: ErrorResponse) => { this.wifiService.revertEnabled(); console.error(err.detail); },
     });
   }
 

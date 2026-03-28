@@ -28,6 +28,15 @@
   --shadow:    0 4px 12px rgb(0 0 0 / 0.10);
 }
 
+/* ── Dark mode tokens ───────────────────────────────────────── */
+[data-theme="dark"] {
+  --color-content-bg:        #0d1117;
+  --color-surface:           #161b22;
+  --color-surface-border:    #30363d;
+  --color-text:              #e6edf3;
+  --color-text-muted:        #7d8590;
+}
+
 /* ── Reset ─────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-text-size-adjust: 100%; }
@@ -109,11 +118,22 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 .badge--info    { background: #dbeafe; color: #1e40af; }
 .badge--muted   { background: #f1f5f9; color: var(--color-text-muted); }
 
+/* ── Dark mode overrides for hardcoded colors ───────────────── */
+[data-theme="dark"] .table tbody tr:hover td      { background: #1c2128; }
+[data-theme="dark"] .badge--success               { background: #0d2e18; color: #3fb950; }
+[data-theme="dark"] .badge--danger                { background: #2d1117; color: #f85149; }
+[data-theme="dark"] .badge--warning               { background: #2b2000; color: #e3b341; }
+[data-theme="dark"] .badge--info                  { background: #0c2344; color: #58a6ff; }
+[data-theme="dark"] .badge--muted                 { background: #21262d; color: #7d8590; }
+[data-theme="dark"] .warning-banner               { background: #2b2000; border-color: #4a3800; color: #e3b341; }
+[data-theme="dark"] .btn--ghost                   { border-color: var(--color-surface-border); color: var(--color-text); }
+[data-theme="dark"] .btn--ghost:hover:not(:disabled) { background: #21262d; }
+
 /* ── Misc helpers ──────────────────────────────────────────── */
 .loading-center { display: flex; justify-content: center; padding: 48px; }
 .warning-banner { background: #fef3c7; border: 1px solid #fde68a; border-radius: var(--radius); padding: 12px 16px; color: #92400e; font-size: 13px; line-height: 1.5; }
 .divider { border: none; border-top: 1px solid var(--color-surface-border); }
 .text-muted { color: var(--color-text-muted); }
 .inline-edit { display: flex; gap: 6px; align-items: center; }
-.search-bar { padding: 7px 10px; border: 1px solid var(--color-surface-border); border-radius: var(--radius); width: 260px; }
+.search-bar { padding: 7px 10px; border: 1px solid var(--color-surface-border); border-radius: var(--radius); width: 260px; background: var(--color-surface); color: var(--color-text); }
 .search-bar:focus { outline: none; border-color: var(--color-accent); }
