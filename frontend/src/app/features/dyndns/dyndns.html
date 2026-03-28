@@ -1,12 +1,7 @@
 <div class="page">
   <div class="page-header">
     <h1 class="page-title">{{ 'dyndns.title' | translate }}</h1>
-    <div class="btn-group">
-      @if (!loading()) {
-        <button class="btn btn--primary btn--sm" (click)="showAddForm.set(true)">{{ 'dyndns.addHost' | translate }}</button>
-      }
-      <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
-    </div>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
   </div>
 
   <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
@@ -77,7 +72,10 @@
 
     <!-- Hosts table -->
     <div class="card">
-      <div class="card__header"><h2 class="card__title">{{ 'dyndns.hosts' | translate }} ({{ hosts().length }})</h2></div>
+      <div class="card__header">
+        <h2 class="card__title">{{ 'dyndns.hosts' | translate }} ({{ hosts().length }})</h2>
+        <button class="btn btn--primary btn--sm" (click)="showAddForm.set(true)">{{ 'dyndns.addHost' | translate }}</button>
+      </div>
       <div class="table-wrap">
         <table class="table">
           <thead>

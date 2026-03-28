@@ -32,7 +32,7 @@ export default class Dhcp implements OnInit {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly saving = signal(false);
-  readonly tab = signal<DhcpTab>('leases');
+  readonly tab = signal<DhcpTab>('static');
 
   readonly leases = signal<AnyRecord[]>([]);
   readonly staticLeases = signal<AnyRecord[]>([]);

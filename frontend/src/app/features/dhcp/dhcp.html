@@ -1,12 +1,7 @@
 <div class="page">
   <div class="page-header">
     <h1 class="page-title">{{ 'dhcp.title' | translate }}</h1>
-    <div class="btn-group">
-      @if (tab() === 'static' && !loading()) {
-        <button class="btn btn--primary btn--sm" (click)="showAddStatic.set(true)">{{ 'dhcp.addStaticLease' | translate }}</button>
-      }
-      <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
-    </div>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
   </div>
 
   <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
@@ -90,7 +85,10 @@
         }
 
         <div class="card">
-          <div class="card__header"><h2 class="card__title">{{ 'dhcp.staticLeases' | translate }} ({{ staticLeases().length }})</h2></div>
+          <div class="card__header">
+            <h2 class="card__title">{{ 'dhcp.staticLeases' | translate }} ({{ staticLeases().length }})</h2>
+            <button class="btn btn--primary btn--sm" (click)="showAddStatic.set(true)">{{ 'dhcp.addStaticLease' | translate }}</button>
+          </div>
           <div class="table-wrap">
             <table class="table">
               <thead><tr>
@@ -110,15 +108,14 @@
                     <td class="mono">{{ l['MACAddress'] ?? '—' }}</td>
                     <td class="mono">{{ l['IPAddress'] ?? '—' }}</td>
                     <td>
-                      <app-status-badge
-                        [type]="l['Enable'] !== false ? 'success' : 'muted'"
-                        [label]="l['Enable'] !== false ? ('common.enabled' | translate) : ('common.disabled' | translate)" />
+                      <label class="toggle">
+                        <input class="toggle__track" type="checkbox"
+                          [checked]="l['Enable'] !== false"
+                          (change)="toggleLease(l)">
+                      </label>
                     </td>
                     <td>
                       <div class="btn-group">
-                        <button class="btn btn--ghost btn--sm" (click)="toggleLease(l)">
-                          {{ l['Enable'] !== false ? ('common.disable' | translate) : ('common.enable' | translate) }}
-                        </button>
                         <button class="btn btn--ghost btn--sm" (click)="forceRenew(l['MACAddress'])">{{ 'dhcp.renew' | translate }}</button>
                         <button class="btn btn--danger btn--sm" (click)="confirmDelete(l)">{{ 'common.delete' | translate }}</button>
                       </div>
