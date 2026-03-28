@@ -3,6 +3,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ToastComponent } from './shared/toast/toast';
 import { AppHeader } from './shared/app-header/app-header';
 import { SafeHtmlPipe } from './shared/safe-html.pipe';
+import { TranslatePipe } from './core/i18n/translate.pipe';
+import { TranslationKey } from './core/i18n/translations';
 import { DeviceRegistryService } from './core/device-registry.service';
 import { LayoutService } from './core/layout.service';
 import { AuthService } from './core/auth.service';
@@ -34,11 +36,11 @@ const ICONS = {
   ),
 };
 
-interface NavItem { path: string; label: string; icon: string; }
+interface NavItem { path: string; label: TranslationKey; icon: string; }
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, ToastComponent, AppHeader, SafeHtmlPipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, ToastComponent, AppHeader, SafeHtmlPipe, TranslatePipe],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -48,13 +50,13 @@ export class App implements OnInit {
   readonly auth = inject(AuthService);
 
   protected readonly nav: NavItem[] = [
-    { path: '/devices',  label: 'Devices',   icon: ICONS.devices  },
-    { path: '/wifi',     label: 'WiFi',       icon: ICONS.wifi     },
-    { path: '/firewall', label: 'Firewall',   icon: ICONS.firewall },
-    { path: '/dhcp',     label: 'DHCP',       icon: ICONS.dhcp     },
-    { path: '/dyndns',   label: 'DynDNS',     icon: ICONS.dyndns   },
-    { path: '/system',   label: 'System',     icon: ICONS.system   },
-    { path: '/lan',      label: 'LAN Stats',  icon: ICONS.lan      },
+    { path: '/devices',  label: 'nav.devices',  icon: ICONS.devices  },
+    { path: '/wifi',     label: 'nav.wifi',      icon: ICONS.wifi     },
+    { path: '/firewall', label: 'nav.firewall',  icon: ICONS.firewall },
+    { path: '/dhcp',     label: 'nav.dhcp',      icon: ICONS.dhcp     },
+    { path: '/dyndns',   label: 'nav.dyndns',    icon: ICONS.dyndns   },
+    { path: '/system',   label: 'nav.system',    icon: ICONS.system   },
+    { path: '/lan',      label: 'nav.lan',       icon: ICONS.lan      },
   ];
 
   ngOnInit(): void {

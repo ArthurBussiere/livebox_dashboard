@@ -1,7 +1,7 @@
 <div class="page">
   <div class="page-header">
-    <h1 class="page-title">WiFi</h1>
-    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+    <h1 class="page-title">{{ 'wifi.title' | translate }}</h1>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
   </div>
 
   <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
@@ -13,19 +13,19 @@
 
       <!-- WiFi + Guest Network -->
       <div class="card">
-        <div class="card__header"><h2 class="card__title">WiFi</h2></div>
+        <div class="card__header"><h2 class="card__title">{{ 'wifi.title' | translate }}</h2></div>
         <div class="card__body">
           <label class="toggle">
             <input class="toggle__track" type="checkbox"
               [checked]="wifiData()?.['Enable']"
               (change)="toggleWifi($any($event.target).checked)">
-            <span class="toggle__label">WiFi Enabled</span>
+            <span class="toggle__label">{{ 'wifi.enabled' | translate }}</span>
           </label>
           <label class="toggle" style="margin-top:12px">
             <input class="toggle__track" type="checkbox"
               [checked]="guestData()?.['Enable']"
               (change)="toggleGuest($any($event.target).checked)">
-            <span class="toggle__label">Guest Network</span>
+            <span class="toggle__label">{{ 'wifi.guestNetwork' | translate }}</span>
           </label>
           @if (guestEntries().length) {
             <table class="kv" style="margin-top:16px">
@@ -39,19 +39,17 @@
 
       <!-- WPS Pairing -->
       <div class="card">
-        <div class="card__header"><h2 class="card__title">WPS Pairing</h2></div>
+        <div class="card__header"><h2 class="card__title">{{ 'wifi.wps' | translate }}</h2></div>
         <div class="card__body wps-card">
           @if (!pairing()) {
-            <p class="text-muted" style="margin-bottom:16px">
-              Start WPS pairing to allow devices to connect without a password.
-            </p>
-            <button class="btn btn--primary" (click)="startPairing()">Start Pairing</button>
+            <p class="text-muted" style="margin-bottom:16px">{{ 'wifi.wpsDesc' | translate }}</p>
+            <button class="btn btn--primary" (click)="startPairing()">{{ 'wifi.startPairing' | translate }}</button>
           } @else {
             <div class="pairing-active">
               <div class="pairing-pulse"></div>
-              <p>Pairing active — press WPS button on your device</p>
+              <p>{{ 'wifi.pairingActive' | translate }}</p>
             </div>
-            <button class="btn btn--danger" style="margin-top:16px" (click)="stopPairing()">Stop</button>
+            <button class="btn btn--danger" style="margin-top:16px" (click)="stopPairing()">{{ 'wifi.stop' | translate }}</button>
           }
         </div>
       </div>

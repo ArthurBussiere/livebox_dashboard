@@ -1,7 +1,7 @@
 <div class="page">
   <div class="page-header">
-    <h1 class="page-title">Firewall</h1>
-    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+    <h1 class="page-title">{{ 'firewall.title' | translate }}</h1>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
   </div>
 
   <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
@@ -10,33 +10,33 @@
     <div class="loading-center"><app-loading-spinner /></div>
   } @else {
     <div class="tabs">
-      <button class="tab" [class.tab--active]="tab()==='level'" (click)="tab.set('level')">Level</button>
-      <button class="tab" [class.tab--active]="tab()==='portforwarding'" (click)="tab.set('portforwarding')">Port Forwarding</button>
-      <button class="tab" [class.tab--active]="tab()==='dmz'" (click)="tab.set('dmz')">DMZ</button>
+      <button class="tab" [class.tab--active]="tab()==='level'" (click)="tab.set('level')">{{ 'firewall.tabLevel' | translate }}</button>
+      <button class="tab" [class.tab--active]="tab()==='portforwarding'" (click)="tab.set('portforwarding')">{{ 'firewall.tabPortForwarding' | translate }}</button>
+      <button class="tab" [class.tab--active]="tab()==='dmz'" (click)="tab.set('dmz')">{{ 'firewall.tabDmz' | translate }}</button>
     </div>
 
     @switch (tab()) {
 
       @case ('level') {
         <div class="card" style="max-width:480px">
-          <div class="card__header"><h2 class="card__title">Firewall Level</h2></div>
+          <div class="card__header"><h2 class="card__title">{{ 'firewall.levelCard' | translate }}</h2></div>
           <div class="card__body">
             <div class="form">
               <div class="form-field">
-                <label class="form-label">IPv4 Level</label>
+                <label class="form-label">{{ 'firewall.ipv4Level' | translate }}</label>
                 <select class="form-select" [ngModel]="ipv4Level()" (ngModelChange)="ipv4Level.set($event)">
                   @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
                 </select>
               </div>
               <div class="form-field">
-                <label class="form-label">IPv6 Level</label>
+                <label class="form-label">{{ 'firewall.ipv6Level' | translate }}</label>
                 <select class="form-select" [ngModel]="ipv6Level()" (ngModelChange)="ipv6Level.set($event)">
                   @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
                 </select>
               </div>
               <div class="form-actions">
                 <button class="btn btn--primary" (click)="saveLevel()" [disabled]="saving()">
-                  {{ saving() ? 'Saving…' : 'Apply & Commit' }}
+                  {{ saving() ? ('common.saving' | translate) : ('firewall.applyCommit' | translate) }}
                 </button>
               </div>
             </div>
@@ -48,16 +48,16 @@
         @if (showPortForm()) {
           <div class="card">
             <div class="card__header">
-              <h2 class="card__title">Add Port Forwarding Rule</h2>
-              <button class="btn btn--ghost btn--sm" (click)="showPortForm.set(false)">Cancel</button>
+              <h2 class="card__title">{{ 'firewall.addPortRule' | translate }}</h2>
+              <button class="btn btn--ghost btn--sm" (click)="showPortForm.set(false)">{{ 'common.cancel' | translate }}</button>
             </div>
             <div class="card__body">
               <form class="form" [formGroup]="portForm" (ngSubmit)="addPortRule()">
                 <div class="form-row">
                   <div class="form-field">
-                    <label class="form-label">Destination Device *</label>
+                    <label class="form-label">{{ 'firewall.destinationDevice' | translate }}</label>
                     <select class="form-select" formControlName="destinationIpAddress">
-                      <option value="" disabled>Select a device…</option>
+                      <option value="" disabled>{{ 'firewall.selectDevice' | translate }}</option>
                       @for (d of registry.allDevices(); track d['PhysAddress']) {
                         <option [value]="d['IPAddress']">
                           {{ d['Name'] || d['HostName'] || d['PhysAddress'] }} — {{ d['IPAddress'] }}
@@ -66,7 +66,7 @@
                     </select>
                   </div>
                   <div class="form-field">
-                    <label class="form-label">Protocol *</label>
+                    <label class="form-label">{{ 'firewall.protocol' | translate }}</label>
                     <select class="form-select" formControlName="protocol">
                       @for (p of protocols; track p) { <option [value]="p">{{ p }}</option> }
                     </select>
@@ -74,21 +74,21 @@
                 </div>
                 <div class="form-row">
                   <div class="form-field">
-                    <label class="form-label">Internal Port *</label>
+                    <label class="form-label">{{ 'firewall.internalPort' | translate }}</label>
                     <input class="form-input" type="number" formControlName="internalPort">
                   </div>
                   <div class="form-field">
-                    <label class="form-label">External Port</label>
+                    <label class="form-label">{{ 'firewall.externalPort' | translate }}</label>
                     <input class="form-input" type="number" formControlName="externalPort">
                   </div>
                 </div>
                 <div class="form-field">
-                  <label class="form-label">Description</label>
+                  <label class="form-label">{{ 'firewall.description' | translate }}</label>
                   <input class="form-input" formControlName="description">
                 </div>
                 <div class="form-actions">
                   <button class="btn btn--primary" type="submit" [disabled]="portForm.invalid || saving()">
-                    {{ saving() ? 'Saving…' : 'Add Rule' }}
+                    {{ saving() ? ('common.saving' | translate) : ('firewall.addRule' | translate) }}
                   </button>
                 </div>
               </form>
@@ -97,14 +97,22 @@
         }
         <div class="card">
           <div class="card__header">
-            <h2 class="card__title">Port Forwarding ({{ portRules().length }})</h2>
-            <button class="btn btn--primary btn--sm" (click)="showPortForm.set(true)">+ Add</button>
+            <h2 class="card__title">{{ 'firewall.portForwarding' | translate }} ({{ portRules().length }})</h2>
+            <button class="btn btn--primary btn--sm" (click)="showPortForm.set(true)">{{ 'common.addBtn' | translate }}</button>
           </div>
           <div class="table-wrap">
             <table class="table">
-              <thead><tr><th>Description</th><th>Ext Port</th><th>Int Port</th><th>Destination IP</th><th>Protocol</th><th>Status</th><th></th></tr></thead>
+              <thead><tr>
+                <th>{{ 'firewall.description' | translate }}</th>
+                <th>{{ 'firewall.extPort' | translate }}</th>
+                <th>{{ 'firewall.intPort' | translate }}</th>
+                <th>{{ 'firewall.destinationIp' | translate }}</th>
+                <th>{{ 'firewall.protocol' | translate }}</th>
+                <th>{{ 'common.status' | translate }}</th>
+                <th></th>
+              </tr></thead>
               <tbody>
-                @if (!portRules().length) { <tr><td colspan="7" class="table--empty">No rules.</td></tr> }
+                @if (!portRules().length) { <tr><td colspan="7" class="table--empty">{{ 'firewall.noRules' | translate }}</td></tr> }
                 @for (r of portRules(); track r['Id'] ?? $index) {
                   <tr>
                     <td>{{ r['Description'] ?? r['Id'] ?? '—' }}</td>
@@ -122,7 +130,7 @@
                         <input class="toggle__track" type="checkbox" [checked]="r['Enable']" (change)="togglePortRule(r)" />
                       </label>
                     </td>
-                    <td><button class="btn btn--danger btn--sm" (click)="confirmDelete('port', r)">Delete</button></td>
+                    <td><button class="btn btn--danger btn--sm" (click)="confirmDelete('port', r)">{{ 'common.delete' | translate }}</button></td>
                   </tr>
                 }
               </tbody>
@@ -135,24 +143,24 @@
         @if (showDmzForm()) {
           <div class="card">
             <div class="card__header">
-              <h2 class="card__title">Add DMZ Rule</h2>
-              <button class="btn btn--ghost btn--sm" (click)="showDmzForm.set(false)">Cancel</button>
+              <h2 class="card__title">{{ 'firewall.addDmzRule' | translate }}</h2>
+              <button class="btn btn--ghost btn--sm" (click)="showDmzForm.set(false)">{{ 'common.cancel' | translate }}</button>
             </div>
             <div class="card__body">
               <form class="form" [formGroup]="dmzForm" (ngSubmit)="addDmzRule()" style="max-width:480px">
                 <div class="form-row">
                   <div class="form-field">
-                    <label class="form-label">Source Interface *</label>
+                    <label class="form-label">{{ 'firewall.sourceInterface' | translate }}</label>
                     <input class="form-input" formControlName="sourceInterface">
                   </div>
                   <div class="form-field">
-                    <label class="form-label">Destination IP *</label>
+                    <label class="form-label">{{ 'firewall.destinationIpRequired' | translate }}</label>
                     <input class="form-input" formControlName="destinationIpAddress">
                   </div>
                 </div>
                 <div class="form-actions">
                   <button class="btn btn--primary" type="submit" [disabled]="dmzForm.invalid || saving()">
-                    {{ saving() ? 'Saving…' : 'Add' }}
+                    {{ saving() ? ('common.saving' | translate) : ('common.add' | translate) }}
                   </button>
                 </div>
               </form>
@@ -161,20 +169,25 @@
         }
         <div class="card">
           <div class="card__header">
-            <h2 class="card__title">DMZ Rules ({{ dmzRules().length }})</h2>
-            <button class="btn btn--primary btn--sm" (click)="showDmzForm.set(true)">+ Add</button>
+            <h2 class="card__title">{{ 'firewall.dmzRules' | translate }} ({{ dmzRules().length }})</h2>
+            <button class="btn btn--primary btn--sm" (click)="showDmzForm.set(true)">{{ 'common.addBtn' | translate }}</button>
           </div>
           <div class="table-wrap">
             <table class="table">
-              <thead><tr><th>Source Interface</th><th>Destination IP</th><th>Status</th><th></th></tr></thead>
+              <thead><tr>
+                <th>{{ 'firewall.sourceInterfaceHeader' | translate }}</th>
+                <th>{{ 'firewall.destinationIp' | translate }}</th>
+                <th>{{ 'common.status' | translate }}</th>
+                <th></th>
+              </tr></thead>
               <tbody>
-                @if (!dmzRules().length) { <tr><td colspan="4" class="table--empty">No DMZ rules.</td></tr> }
+                @if (!dmzRules().length) { <tr><td colspan="4" class="table--empty">{{ 'firewall.noDmzRules' | translate }}</td></tr> }
                 @for (r of dmzRules(); track r['Id'] ?? $index) {
                   <tr>
                     <td>{{ r['SourceInterface'] ?? '—' }}</td>
                     <td class="mono">{{ r['DestinationIPAddress'] ?? '—' }}</td>
                     <td><app-status-badge [type]="r['Enable'] ? 'success' : 'muted'" [label]="r['Enable'] ? 'On' : 'Off'" /></td>
-                    <td><button class="btn btn--danger btn--sm" (click)="confirmDelete('dmz', r)">Delete</button></td>
+                    <td><button class="btn btn--danger btn--sm" (click)="confirmDelete('dmz', r)">{{ 'common.delete' | translate }}</button></td>
                   </tr>
                 }
               </tbody>
@@ -183,16 +196,15 @@
         </div>
       }
 
-
     }
   }
 </div>
 
 <app-confirm-dialog
   [open]="!!deleteTarget()"
-  title="Delete Rule"
-  message="Delete this firewall rule? This cannot be undone."
-  confirmLabel="Delete"
+  [title]="'firewall.deleteRuleTitle' | translate"
+  [message]="'firewall.deleteRuleMsg' | translate"
+  [confirmLabel]="'common.delete' | translate"
   [danger]="true"
   (confirmed)="deleteRule()"
   (cancelled)="deleteTarget.set(null)" />

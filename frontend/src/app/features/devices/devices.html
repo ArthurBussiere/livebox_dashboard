@@ -1,21 +1,21 @@
 <div class="page">
   <div class="page-header">
-    <h1 class="page-title">Devices</h1>
-    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+    <h1 class="page-title">{{ 'devices.title' | translate }}</h1>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
   </div>
 
   @if (!loading()) {
     <div class="filters">
-      <input class="search-bar" type="search" placeholder="Search by name, IP, MAC…"
+      <input class="search-bar" type="search" [placeholder]="'devices.search' | translate"
         [ngModel]="search()" (ngModelChange)="search.set($event)">
       <div class="filter-group">
-        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='all'" (click)="statusFilter.set('all')">All</button>
-        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='active'" (click)="statusFilter.set('active')">Active</button>
-        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='inactive'" (click)="statusFilter.set('inactive')">Inactive</button>
+        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='all'" (click)="statusFilter.set('all')">{{ 'devices.filterAll' | translate }}</button>
+        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='active'" (click)="statusFilter.set('active')">{{ 'devices.filterActive' | translate }}</button>
+        <button class="filter-btn" [class.filter-btn--active]="statusFilter()==='inactive'" (click)="statusFilter.set('inactive')">{{ 'devices.filterInactive' | translate }}</button>
       </div>
       @if (deviceTypes().length) {
         <select class="filter-select" [ngModel]="typeFilter()" (ngModelChange)="typeFilter.set($event)">
-          <option value="">All types</option>
+          <option value="">{{ 'common.allTypes' | translate }}</option>
           @for (t of deviceTypes(); track t) { <option [value]="t">{{ t }}</option> }
         </select>
       }
@@ -29,33 +29,37 @@
   } @else {
     <div class="card">
       <div class="card__header">
-        <h2 class="card__title">All Devices ({{ filtered().length }})</h2>
+        <h2 class="card__title">{{ 'devices.allDevices' | translate }} ({{ filtered().length }})</h2>
       </div>
       <div class="table-wrap">
         <table class="table">
           <thead>
             <tr>
-              <th>Name</th><th>IP Address</th><th>MAC Address</th>
-              <th>Type</th><th>Status</th><th></th>
+              <th>{{ 'common.name' | translate }}</th>
+              <th>{{ 'devices.ipAddress' | translate }}</th>
+              <th>{{ 'devices.macAddress' | translate }}</th>
+              <th>{{ 'devices.type' | translate }}</th>
+              <th>{{ 'common.status' | translate }}</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             @if (!filtered().length) {
-              <tr><td colspan="6" class="table--empty">No devices found.</td></tr>
+              <tr><td colspan="6" class="table--empty">{{ 'devices.noDevices' | translate }}</td></tr>
             }
             @for (device of filtered(); track device['Key'] ?? $index) {
               <tr>
-                <td>{{ getDisplayName(device) || '(unnamed)' }}</td>
+                <td>{{ getDisplayName(device) || ('common.unnamed' | translate) }}</td>
                 <td class="mono">{{ device['IPAddress'] ?? '—' }}</td>
                 <td class="mono">{{ device['PhysAddress'] ?? '—' }}</td>
                 <td>{{ device['DeviceType'] ?? '—' }}</td>
                 <td>
                   <app-status-badge
                     [type]="device['Active'] ? 'success' : 'muted'"
-                    [label]="device['Active'] ? 'Active' : 'Inactive'" />
+                    [label]="device['Active'] ? ('common.active' | translate) : ('common.inactive' | translate)" />
                 </td>
                 <td>
-                  <button class="btn btn--danger btn--sm" (click)="confirmDelete(device)">Delete</button>
+                  <button class="btn btn--danger btn--sm" (click)="confirmDelete(device)">{{ 'common.delete' | translate }}</button>
                 </td>
               </tr>
             }
@@ -68,9 +72,9 @@
 
 <app-confirm-dialog
   [open]="!!deleteTarget()"
-  title="Remove Device"
-  [message]="'Remove ' + (deleteTarget()?.['Name'] || deleteTarget()?.['IPAddress'] || 'this device') + ' from the device list?'"
-  confirmLabel="Remove"
+  [title]="'devices.removeTitle' | translate"
+  [message]="deleteMsg()"
+  [confirmLabel]="'devices.removeLabel' | translate"
   [danger]="true"
   (confirmed)="deleteDevice()"
   (cancelled)="deleteTarget.set(null)" />

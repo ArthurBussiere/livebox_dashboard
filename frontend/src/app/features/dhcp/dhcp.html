@@ -1,11 +1,11 @@
 <div class="page">
   <div class="page-header">
-    <h1 class="page-title">DHCP</h1>
+    <h1 class="page-title">{{ 'dhcp.title' | translate }}</h1>
     <div class="btn-group">
       @if (tab() === 'static' && !loading()) {
-        <button class="btn btn--primary btn--sm" (click)="showAddStatic.set(true)">+ Add Static Lease</button>
+        <button class="btn btn--primary btn--sm" (click)="showAddStatic.set(true)">{{ 'dhcp.addStaticLease' | translate }}</button>
       }
-      <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+      <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
     </div>
   </div>
 
@@ -15,21 +15,25 @@
     <div class="loading-center"><app-loading-spinner /></div>
   } @else {
     <div class="tabs">
-      <button class="tab" [class.tab--active]="tab()==='leases'" (click)="tab.set('leases')">Active Leases</button>
-      <button class="tab" [class.tab--active]="tab()==='static'" (click)="tab.set('static')">Static Leases</button>
-      <button class="tab" [class.tab--active]="tab()==='settings'" (click)="tab.set('settings')">Settings</button>
+      <button class="tab" [class.tab--active]="tab()==='leases'" (click)="tab.set('leases')">{{ 'dhcp.tabActive' | translate }}</button>
+      <button class="tab" [class.tab--active]="tab()==='static'" (click)="tab.set('static')">{{ 'dhcp.tabStatic' | translate }}</button>
+      <button class="tab" [class.tab--active]="tab()==='settings'" (click)="tab.set('settings')">{{ 'dhcp.tabSettings' | translate }}</button>
     </div>
 
     @switch (tab()) {
       @case ('leases') {
         <div class="card">
-          <div class="card__header"><h2 class="card__title">Active Leases ({{ leases().length }})</h2></div>
+          <div class="card__header"><h2 class="card__title">{{ 'dhcp.activeLeases' | translate }} ({{ leases().length }})</h2></div>
           <div class="table-wrap">
             <table class="table">
-              <thead><tr><th>Name</th><th>IP Address</th><th>MAC Address</th></tr></thead>
+              <thead><tr>
+                <th>{{ 'common.name' | translate }}</th>
+                <th>{{ 'dhcp.ipAddress' | translate }}</th>
+                <th>{{ 'dhcp.macAddress' | translate }}</th>
+              </tr></thead>
               <tbody>
                 @if (!leases().length) {
-                  <tr><td colspan="3" class="table--empty">No active leases.</td></tr>
+                  <tr><td colspan="3" class="table--empty">{{ 'dhcp.noActiveLeases' | translate }}</td></tr>
                 }
                 @for (l of leases(); track l['MACAddress'] ?? $index) {
                   <tr>
@@ -48,16 +52,16 @@
         @if (showAddStatic()) {
           <div class="card">
             <div class="card__header">
-              <h2 class="card__title">Add Static Lease</h2>
-              <button class="btn btn--ghost btn--sm" (click)="showAddStatic.set(false)">Cancel</button>
+              <h2 class="card__title">{{ 'dhcp.addStaticLeaseCard' | translate }}</h2>
+              <button class="btn btn--ghost btn--sm" (click)="showAddStatic.set(false)">{{ 'common.cancel' | translate }}</button>
             </div>
             <div class="card__body">
               <form class="form" [formGroup]="addStaticForm" (ngSubmit)="addStaticLease()" style="max-width:480px">
                 <div class="form-field">
-                  <label class="form-label">Device *</label>
+                  <label class="form-label">{{ 'dhcp.device' | translate }}</label>
                   @if (availableDevices().length) {
                     <select class="form-select" (change)="selectDevice($any($event.target).value)">
-                      <option value="">— select a device —</option>
+                      <option value="">{{ 'dhcp.selectDevice' | translate }}</option>
                       @for (d of availableDevices(); track d['PhysAddress']) {
                         <option [value]="d['PhysAddress']">
                           {{ d['Name'] || 'Unknown' }} &nbsp;·&nbsp; {{ d['PhysAddress'] }} &nbsp;·&nbsp; {{ d['IPAddress'] || 'no IP' }}
@@ -65,19 +69,19 @@
                       }
                     </select>
                   } @else {
-                    <p class="form-hint">All known devices already have a static lease.</p>
+                    <p class="form-hint">{{ 'dhcp.allHaveLeases' | translate }}</p>
                   }
                   @if (addStaticForm.value.macAddress) {
-                    <span class="form-hint">MAC: {{ addStaticForm.value.macAddress }}</span>
+                    <span class="form-hint">{{ 'dhcp.mac' | translate }}{{ addStaticForm.value.macAddress }}</span>
                   }
                 </div>
                 <div class="form-field">
-                  <label class="form-label">IP Address *</label>
-                  <input class="form-input" formControlName="ipAddress" placeholder="192.168.1.x">
+                  <label class="form-label">{{ 'dhcp.ipAddressRequired' | translate }}</label>
+                  <input class="form-input" formControlName="ipAddress" [placeholder]="'dhcp.ipPlaceholder' | translate">
                 </div>
                 <div class="form-actions">
                   <button class="btn btn--primary" type="submit" [disabled]="addStaticForm.invalid || saving()">
-                    {{ saving() ? 'Saving…' : 'Add' }}
+                    {{ saving() ? ('common.saving' | translate) : ('common.add' | translate) }}
                   </button>
                 </div>
               </form>
@@ -86,13 +90,19 @@
         }
 
         <div class="card">
-          <div class="card__header"><h2 class="card__title">Static Leases ({{ staticLeases().length }})</h2></div>
+          <div class="card__header"><h2 class="card__title">{{ 'dhcp.staticLeases' | translate }} ({{ staticLeases().length }})</h2></div>
           <div class="table-wrap">
             <table class="table">
-              <thead><tr><th>Name</th><th>MAC Address</th><th>IP Address</th><th>Status</th><th>Actions</th></tr></thead>
+              <thead><tr>
+                <th>{{ 'common.name' | translate }}</th>
+                <th>{{ 'dhcp.macAddress' | translate }}</th>
+                <th>{{ 'dhcp.ipAddress' | translate }}</th>
+                <th>{{ 'common.status' | translate }}</th>
+                <th>{{ 'common.actions' | translate }}</th>
+              </tr></thead>
               <tbody>
                 @if (!staticLeases().length) {
-                  <tr><td colspan="5" class="table--empty">No static leases configured.</td></tr>
+                  <tr><td colspan="5" class="table--empty">{{ 'dhcp.noStaticLeases' | translate }}</td></tr>
                 }
                 @for (l of staticLeases(); track l['MACAddress'] ?? $index) {
                   <tr>
@@ -102,15 +112,15 @@
                     <td>
                       <app-status-badge
                         [type]="l['Enable'] !== false ? 'success' : 'muted'"
-                        [label]="l['Enable'] !== false ? 'Enabled' : 'Disabled'" />
+                        [label]="l['Enable'] !== false ? ('common.enabled' | translate) : ('common.disabled' | translate)" />
                     </td>
                     <td>
                       <div class="btn-group">
                         <button class="btn btn--ghost btn--sm" (click)="toggleLease(l)">
-                          {{ l['Enable'] !== false ? 'Disable' : 'Enable' }}
+                          {{ l['Enable'] !== false ? ('common.disable' | translate) : ('common.enable' | translate) }}
                         </button>
-                        <button class="btn btn--ghost btn--sm" (click)="forceRenew(l['MACAddress'])">Renew</button>
-                        <button class="btn btn--danger btn--sm" (click)="confirmDelete(l)">Delete</button>
+                        <button class="btn btn--ghost btn--sm" (click)="forceRenew(l['MACAddress'])">{{ 'dhcp.renew' | translate }}</button>
+                        <button class="btn btn--danger btn--sm" (click)="confirmDelete(l)">{{ 'common.delete' | translate }}</button>
                       </div>
                     </td>
                   </tr>
@@ -124,17 +134,17 @@
       @case ('settings') {
         <div class="cards-grid">
           <div class="card">
-            <div class="card__header"><h2 class="card__title">Lease Time</h2></div>
+            <div class="card__header"><h2 class="card__title">{{ 'dhcp.leaseTime' | translate }}</h2></div>
             <div class="card__body">
               <form class="form" [formGroup]="leaseTimeForm" (ngSubmit)="saveLeaseTime()" style="max-width:320px">
                 <div class="form-field">
-                  <label class="form-label">Lease Time (seconds)</label>
+                  <label class="form-label">{{ 'dhcp.leaseTimeSeconds' | translate }}</label>
                   <input class="form-input" type="number" formControlName="leaseTime">
-                  <span class="form-hint">Default: 86400 (24h)</span>
+                  <span class="form-hint">{{ 'dhcp.leaseTimeHint' | translate }}</span>
                 </div>
                 <div class="form-actions">
                   <button class="btn btn--primary" type="submit" [disabled]="saving()">
-                    {{ saving() ? 'Saving…' : 'Save' }}
+                    {{ saving() ? ('common.saving' | translate) : ('common.save' | translate) }}
                   </button>
                 </div>
               </form>
@@ -143,7 +153,7 @@
 
           @if (entries(doraStats()).length) {
             <div class="card">
-              <div class="card__header"><h2 class="card__title">DORA Cycle Stats</h2></div>
+              <div class="card__header"><h2 class="card__title">{{ 'dhcp.doraStats' | translate }}</h2></div>
               <div class="card__body">
                 <table class="kv">
                   @for (e of entries(doraStats()); track e[0]) {
@@ -161,9 +171,9 @@
 
 <app-confirm-dialog
   [open]="!!deleteTarget()"
-  title="Delete Static Lease"
-  [message]="'Remove static lease for ' + deleteTarget()?.['MACAddress'] + '?'"
-  confirmLabel="Delete"
+  [title]="'dhcp.deleteTitle' | translate"
+  [message]="'dhcp.deleteMsg' | translate : (deleteTarget()?.['MACAddress'] ?? '')"
+  [confirmLabel]="'dhcp.deleteLabel' | translate"
   [danger]="true"
   (confirmed)="deleteStatic()"
   (cancelled)="deleteTarget.set(null)" />

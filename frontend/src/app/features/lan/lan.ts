@@ -1,6 +1,7 @@
 import { Component, inject, computed, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrafficWsService, POLL_INTERVAL_S } from '../../services/traffic-ws.service';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 
 
 const CHART_W = 800;
@@ -11,7 +12,7 @@ const MAX_POINTS = 120; // must match MAX_HISTORY in traffic-ws.service
   selector: 'app-lan',
   templateUrl: './lan.html',
   styleUrl: './lan.css',
-  imports: [],
+  imports: [TranslatePipe],
 })
 export default class Lan implements OnInit {
   private readonly trafficWs = inject(TrafficWsService);

@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { forkJoin } from 'rxjs';
 import { DyndnsService } from '../../services/dyndns.service';
 import { DynDNSHostCreate, ErrorResponse } from '../../models';
@@ -15,7 +16,7 @@ type AnyRecord = Record<string, any>;
   selector: 'app-dyndns',
   templateUrl: './dyndns.html',
   styleUrl: './dyndns.css',
-  imports: [ReactiveFormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog],
+  imports: [ReactiveFormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog, TranslatePipe],
 })
 export default class Dyndns implements OnInit {
   private readonly dyndns = inject(DyndnsService);

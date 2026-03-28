@@ -4,6 +4,8 @@ import { forkJoin } from 'rxjs';
 import { FirewallService } from '../../services/firewall.service';
 import { DeviceRegistryService } from '../../core/device-registry.service';
 import { NotificationService } from '../../core/notification.service';
+import { TranslationService } from '../../core/i18n/translation.service';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { ErrorResponse, FirewallLevel, Protocol } from '../../models';
 import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 import { ErrorBanner } from '../../shared/error-banner/error-banner';
@@ -19,12 +21,13 @@ type FwTab = 'level' | 'portforwarding' | 'dmz';
   selector: 'app-firewall',
   templateUrl: './firewall.html',
   styleUrl: './firewall.css',
-  imports: [ReactiveFormsModule, FormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog],
+  imports: [ReactiveFormsModule, FormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog, TranslatePipe],
 })
 export default class Firewall implements OnInit {
   private readonly fw = inject(FirewallService);
   private readonly fb = inject(FormBuilder);
   private readonly notify = inject(NotificationService);
+  private readonly i18n = inject(TranslationService);
   readonly registry = inject(DeviceRegistryService);
 
   readonly loading = signal(true);
@@ -105,8 +108,8 @@ export default class Firewall implements OnInit {
       next: () => {
         this.saving.set(false);
         this.fw.commit().subscribe({
-          next: () => this.notify.success('Niveau de pare-feu appliqué avec succès.'),
-          error: () => this.notify.success('Niveau de pare-feu appliqué (commit non confirmé).'),
+          next: () => this.notify.success(this.i18n.t('firewall.levelApplied')),
+          error: () => this.notify.success(this.i18n.t('firewall.levelAppliedNoCommit')),
         });
       },
       error: (err: ErrorResponse) => { this.error.set(err.detail); this.saving.set(false); },
@@ -127,7 +130,7 @@ export default class Firewall implements OnInit {
     }).subscribe({
       next: () => {
         this.saving.set(false); this.showPortForm.set(false); this.portForm.reset({ internalPort: 80, protocol: 'TCP', enable: true, persistent: true });
-        this.notify.success('Règle de port forwarding ajoutée.');
+        this.notify.success(this.i18n.t('firewall.portRuleAdded'));
         this.reloadRules('port');
       },
       error: (err: ErrorResponse) => { this.error.set(err.detail); this.saving.set(false); },
@@ -153,7 +156,7 @@ export default class Firewall implements OnInit {
     this.fw.enablePortForwarding(id, { origin: r['Origin'] ?? 'webui', enable }).subscribe({
       next: () => {
         this.portRules.update((rules) => rules.map((x) => x['Id'] === r['Id'] ? { ...x, Enable: enable } : x));
-        this.notify.success(enable ? 'Règle activée.' : 'Règle désactivée.');
+        this.notify.success(enable ? this.i18n.t('firewall.ruleEnabled') : this.i18n.t('firewall.ruleDisabled'));
       },
       error: (err: ErrorResponse) => this.error.set(err.detail),
     });
@@ -171,7 +174,7 @@ export default class Firewall implements OnInit {
       : this.fw.deleteDMZ(id);
     obs.subscribe({
       next: () => {
-        this.notify.success('Règle supprimée.');
+        this.notify.success(this.i18n.t('firewall.ruleDeleted'));
         this.reloadRules(t.type);
       },
       error: (err: ErrorResponse) => this.error.set(err.detail),

@@ -8,7 +8,7 @@
         <p>{{ message() }}</p>
       </div>
       <div class="dialog__footer">
-        <button class="btn btn--ghost" (click)="cancelled.emit()">Cancel</button>
+        <button class="btn btn--ghost" (click)="cancelled.emit()">{{ 'common.cancel' | translate }}</button>
         <button
           class="btn"
           [class.btn--danger]="danger()"

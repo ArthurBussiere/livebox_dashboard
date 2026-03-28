@@ -1,8 +1,8 @@
 <div class="login-page">
   <div class="login-card">
     <div class="login-card__header">
-      <h1 class="login-card__title">Livebox Dashboard</h1>
-      <p class="login-card__sub">Sign in with your livebox admin credentials to continue</p>
+      <h1 class="login-card__title">{{ 'login.title' | translate }}</h1>
+      <p class="login-card__sub">{{ 'login.subtitle' | translate }}</p>
     </div>
 
     @if (error()) {
@@ -11,22 +11,22 @@
 
     <form class="form" (submit)="$event.preventDefault(); submit()">
       <div class="form-field">
-        <label class="form-label">Livebox URL</label>
+        <label class="form-label">{{ 'login.url' | translate }}</label>
         <input class="form-input" type="url" autocomplete="url" [value]="url()"
           (input)="url.set($any($event.target).value)" />
       </div>
       <div class="form-field">
-        <label class="form-label">Username</label>
+        <label class="form-label">{{ 'login.username' | translate }}</label>
         <input class="form-input" type="text" autocomplete="username" [value]="username()"
           (input)="username.set($any($event.target).value)" />
       </div>
       <div class="form-field">
-        <label class="form-label">Password</label>
+        <label class="form-label">{{ 'login.password' | translate }}</label>
         <input class="form-input" type="password" autocomplete="current-password" [value]="password()"
           (input)="password.set($any($event.target).value)" />
       </div>
       <button class="btn btn--primary login-card__submit" type="submit" [disabled]="loading()">
-        {{ loading() ? 'Signing in…' : 'Sign in' }}
+        {{ loading() ? ('login.signingIn' | translate) : ('login.signIn' | translate) }}
       </button>
     </form>
   </div>

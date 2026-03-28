@@ -1,12 +1,12 @@
 <div class="page">
   <div class="page-header">
-    <h1 class="page-title">LAN Stats</h1>
+    <h1 class="page-title">{{ 'lan.title' | translate }}</h1>
   </div>
 
   <!-- Real-time traffic chart -->
   <div class="card">
     <div class="card__header">
-      <h2 class="card__title">Trafic en temps réel</h2>
+      <h2 class="card__title">{{ 'lan.realtimeTraffic' | translate }}</h2>
       <div class="chart-legend">
         <span class="legend-item legend-rx">&#9644; Download (RX)</span>
         <span class="legend-item legend-tx">&#9644; Upload (TX)</span>
@@ -15,11 +15,11 @@
     <div class="card__body">
       <div class="chart-stats">
         <div class="chart-stat">
-          <span class="chart-stat__label">↓ Download</span>
+          <span class="chart-stat__label">{{ 'lan.download' | translate }}</span>
           <span class="chart-stat__value chart-stat__value--rx">{{ fmtBps(currentRx()) }}</span>
         </div>
         <div class="chart-stat">
-          <span class="chart-stat__label">↑ Upload</span>
+          <span class="chart-stat__label">{{ 'lan.upload' | translate }}</span>
           <span class="chart-stat__value chart-stat__value--tx">{{ fmtBps(currentTx()) }}</span>
         </div>
         <div class="chart-stat">
@@ -36,8 +36,8 @@
         @if (history().length < 2) {
           <div class="chart-waiting">
             <div class="chart-waiting__icon">〜</div>
-            <div>Collecte des données en cours…</div>
-            <div class="chart-waiting__sub">Polling toutes les secondes</div>
+            <div>{{ 'lan.collectingData' | translate }}</div>
+            <div class="chart-waiting__sub">{{ 'lan.pollingEverySecond' | translate }}</div>
           </div>
         } @else {
           <div class="chart-y-labels">
@@ -89,7 +89,7 @@
 
       <div class="chart-footer">
         <span>← {{ windowSeconds() }} s</span>
-        <span>Maintenant →</span>
+        <span>{{ 'lan.now' | translate }}</span>
       </div>
     </div>
   </div>

@@ -1,5 +1,7 @@
 import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslationService } from '../../core/i18n/translation.service';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { DevicesService } from '../../services/devices.service';
 import { DeviceRegistryService } from '../../core/device-registry.service';
 import { ErrorResponse } from '../../models';
@@ -15,11 +17,12 @@ type AnyRecord = Record<string, any>;
   selector: 'app-devices',
   templateUrl: './devices.html',
   styleUrl: './devices.css',
-  imports: [FormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog],
+  imports: [FormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog, TranslatePipe],
 })
 export default class Devices implements OnInit {
   private readonly devicesService = inject(DevicesService);
   private readonly registry = inject(DeviceRegistryService);
+  readonly i18n = inject(TranslationService);
 
   readonly loading = computed(() => this.registry.loading());
   readonly error = signal<string | null>(null);
@@ -73,6 +76,11 @@ export default class Devices implements OnInit {
     const names: AnyRecord[] = device['Names'] ?? [];
     const gui = names.find((n: AnyRecord) => n['Source'] === 'GUI');
     return gui ? gui['Name'] : (device['Name'] ?? '');
+  }
+
+  deleteMsg(): string {
+    const t = this.deleteTarget();
+    return this.i18n.t('devices.removeMsg', t?.['Name'] || t?.['IPAddress'] || this.i18n.t('devices.thisDevice'));
   }
 
   confirmDelete(device: AnyRecord): void { this.deleteTarget.set(device); }

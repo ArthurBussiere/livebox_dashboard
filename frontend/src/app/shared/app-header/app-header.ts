@@ -6,6 +6,8 @@ import { NmcService } from '../../services/nmc.service';
 import { DeviceRegistryService } from '../../core/device-registry.service';
 import { LayoutService } from '../../core/layout.service';
 import { AuthService } from '../../core/auth.service';
+import { TranslationService } from '../../core/i18n/translation.service';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { ErrorResponse } from '../../models';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -15,9 +17,10 @@ type AnyRecord = Record<string, any>;
   selector: 'app-header',
   templateUrl: './app-header.html',
   styleUrl: './app-header.css',
-  imports: [],
+  imports: [TranslatePipe],
 })
 export class AppHeader {
+  readonly i18n = inject(TranslationService);
   private readonly registry = inject(DeviceRegistryService);
   private readonly wifiService = inject(WifiService);
   private readonly nmc = inject(NmcService);

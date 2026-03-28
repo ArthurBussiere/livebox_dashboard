@@ -1,5 +1,7 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import { TranslationService } from '../../core/i18n/translation.service';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { DhcpService } from '../../services/dhcp.service';
@@ -19,12 +21,13 @@ type DhcpTab = 'leases' | 'static' | 'settings';
   selector: 'app-dhcp',
   templateUrl: './dhcp.html',
   styleUrl: './dhcp.css',
-  imports: [ReactiveFormsModule, FormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog],
+  imports: [ReactiveFormsModule, FormsModule, LoadingSpinner, ErrorBanner, StatusBadge, ConfirmDialog, TranslatePipe],
 })
 export default class Dhcp implements OnInit {
   private readonly dhcp = inject(DhcpService);
   private readonly fb = inject(FormBuilder);
   readonly registry = inject(DeviceRegistryService);
+  readonly i18n = inject(TranslationService);
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);

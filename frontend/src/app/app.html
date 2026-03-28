@@ -12,7 +12,7 @@
             routerLinkActive="nav-item--active"
           >
             <span class="nav-item__icon" [innerHTML]="item.icon | safeHtml"></span>
-            <span class="nav-item__label">{{ item.label }}</span>
+            <span class="nav-item__label">{{ item.label | translate }}</span>
           </a>
         }
       </nav>

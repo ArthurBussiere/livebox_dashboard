@@ -2,7 +2,7 @@
 
   <!-- Hamburger -->
   <button class="app-header__hamburger" (click)="layout.toggle()"
-    [attr.aria-label]="layout.sidebarOpen() ? 'Close menu' : 'Open menu'">
+    [attr.aria-label]="layout.sidebarOpen() ? ('header.closeMenu' | translate) : ('header.openMenu' | translate)">
     <span></span><span></span><span></span>
   </button>
 
@@ -15,7 +15,7 @@
 
   <!-- WAN -->
   <div class="app-header__group">
-    <span class="app-header__label">WAN</span>
+    <span class="app-header__label">{{ 'header.wan' | translate }}</span>
     <span class="app-header__dot" [class.app-header__dot--up]="wanUp()" [class.app-header__dot--down]="!wanUp()"></span>
     <span class="app-header__value">{{ wanStatus()?.['WanState'] ?? '—' }}</span>
     @if (wanStatus()?.['IPAddress']) {
@@ -33,10 +33,12 @@
 
   <!-- Devices -->
   <div class="app-header__group">
-    <span class="app-header__label">Devices</span>
-    <span class="app-header__value"><strong>{{ activeDevices() }}</strong> active</span>
+    <svg class="app-header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+    </svg>
+    <span class="app-header__value"><strong>{{ activeDevices() }}</strong> {{ 'header.active' | translate }}</span>
     @if (totalDevices() > 0) {
-    <span class="app-header__sub">/ {{ totalDevices() }} total</span>
+    <span class="app-header__sub">/ {{ totalDevices() }} {{ 'header.total' | translate }}</span>
     }
   </div>
 
@@ -44,7 +46,7 @@
 
   <!-- WiFi -->
   <div class="app-header__group">
-    <span class="app-header__label">WiFi</span>
+    <span class="app-header__label">{{ 'header.wifi' | translate }}</span>
     <label class="app-header__toggle">
       <input type="checkbox" [checked]="wifiEnabled()" (change)="toggleWifi()">
       <span class="app-header__toggle-track"></span>
@@ -53,13 +55,22 @@
     <span class="app-header__value">{{ wifiSsid() }}</span>
     }
     @if (wifiChannel()) {
-    <span class="app-header__sub">ch.{{ wifiChannel() }}</span>
+    <span class="app-header__sub">{{ 'header.channel' | translate }}{{ wifiChannel() }}</span>
     }
   </div>
 
   <div class="app-header__divider"></div>
 
-  <!-- Logout -->
-  <button class="app-header__logout" (click)="auth.logout()">Sign out</button>
+  <!-- Language toggle + Logout -->
+  <div class="app-header__actions">
+    <button class="app-header__logout" (click)="i18n.toggle()">
+      {{ i18n.lang() === 'en' ? 'FR' : 'EN' }}
+    </button>
+    <button class="app-header__logout" (click)="auth.logout()" [attr.aria-label]="'header.signOut' | translate" [title]="'header.signOut' | translate">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    </button>
+  </div>
 
 </header>

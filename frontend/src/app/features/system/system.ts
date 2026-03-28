@@ -3,6 +3,8 @@ import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { NmcService } from '../../services/nmc.service';
 import { DeviceService } from '../../services/device.service';
+import { TranslationService } from '../../core/i18n/translation.service';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { ErrorResponse } from '../../models';
 import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
 import { ErrorBanner } from '../../shared/error-banner/error-banner';
@@ -17,11 +19,12 @@ type SysTab = 'ipv6' | 'device' | 'control';
   selector: 'app-system',
   templateUrl: './system.html',
   styleUrl: './system.css',
-  imports: [ReactiveFormsModule, LoadingSpinner, ErrorBanner, ConfirmDialog],
+  imports: [ReactiveFormsModule, LoadingSpinner, ErrorBanner, ConfirmDialog, TranslatePipe],
 })
 export default class System implements OnInit {
   private readonly nmc = inject(NmcService);
   private readonly device = inject(DeviceService);
+  private readonly i18n = inject(TranslationService);
 private readonly fb = inject(FormBuilder);
 
   readonly loading = signal(true);
@@ -79,9 +82,15 @@ reboot(): void {
 
   confirmDialog(): string {
     const a = this.confirmAction();
-    return a === 'reboot'
-      ? 'Reboot the Livebox? All connections will be interrupted for ~60s.'
-      : 'Factory reset the Livebox? All settings will be lost.';
+    return a === 'reboot' ? this.i18n.t('system.rebootMsg') : this.i18n.t('system.resetMsg');
+  }
+
+  confirmTitle(): string {
+    return this.confirmAction() === 'reboot' ? this.i18n.t('system.rebootTitle') : this.i18n.t('system.resetTitle');
+  }
+
+  confirmLabel(): string {
+    return this.confirmAction() === 'reboot' ? this.i18n.t('system.rebootLabel') : this.i18n.t('system.resetLabel');
   }
 
   onConfirm(): void {

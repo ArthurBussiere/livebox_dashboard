@@ -4,6 +4,7 @@ import { catchError, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { NotificationService } from './notification.service';
 import { AuthService } from './auth.service';
+import { TranslationService } from './i18n/translation.service';
 import { ErrorResponse } from '../models';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
@@ -11,13 +12,14 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const notifications = inject(NotificationService);
   const auth = inject(AuthService);
   const router = inject(Router);
+  const i18n = inject(TranslationService);
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
       if (err.status === 401 && !req.url.includes('/auth/login')) {
         auth.clearToken();
         router.navigate(['/login']);
-        return throwError(() => ({ detail: 'Session expired', code: 401 }) as ErrorResponse);
+        return throwError(() => ({ detail: i18n.t('error.sessionExpired'), code: 401 }) as ErrorResponse);
       }
 
       const error: ErrorResponse =

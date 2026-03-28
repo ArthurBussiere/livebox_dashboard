@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import { WifiService } from '../../services/wifi.service';
 import { ErrorResponse } from '../../models';
 import { LoadingSpinner } from '../../shared/loading-spinner/loading-spinner';
@@ -13,7 +14,7 @@ type AnyRecord = Record<string, any>;
   selector: 'app-wifi',
   templateUrl: './wifi.html',
   styleUrl: './wifi.css',
-  imports: [LoadingSpinner, ErrorBanner, StatusBadge],
+  imports: [LoadingSpinner, ErrorBanner, StatusBadge, TranslatePipe],
 })
 export default class Wifi implements OnInit {
   private readonly wifiService = inject(WifiService);

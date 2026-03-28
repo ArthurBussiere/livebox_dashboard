@@ -1,7 +1,7 @@
 <div class="page">
   <div class="page-header">
-    <h1 class="page-title">System</h1>
-    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">↺ Refresh</button>
+    <h1 class="page-title">{{ 'system.title' | translate }}</h1>
+    <button class="btn btn--ghost btn--sm" (click)="load()" [disabled]="loading()">{{ 'common.refresh' | translate }}</button>
   </div>
 
   <app-error-banner [message]="error()" (dismissed)="error.set(null)" />
@@ -10,25 +10,25 @@
     <div class="loading-center"><app-loading-spinner /></div>
   } @else {
     <div class="tabs">
-      <button class="tab" [class.tab--active]="tab()==='ipv6'" (click)="tab.set('ipv6')">IPv6</button>
-      <button class="tab" [class.tab--active]="tab()==='device'" (click)="tab.set('device')">Device</button>
-      <button class="tab" [class.tab--active]="tab()==='control'" (click)="tab.set('control')">Control</button>
+      <button class="tab" [class.tab--active]="tab()==='ipv6'" (click)="tab.set('ipv6')">{{ 'system.tabIpv6' | translate }}</button>
+      <button class="tab" [class.tab--active]="tab()==='device'" (click)="tab.set('device')">{{ 'system.tabDevice' | translate }}</button>
+      <button class="tab" [class.tab--active]="tab()==='control'" (click)="tab.set('control')">{{ 'system.tabControl' | translate }}</button>
     </div>
 
     @switch (tab()) {
 
       @case ('ipv6') {
         <div class="card" style="max-width:480px">
-          <div class="card__header"><h2 class="card__title">IPv6 Configuration</h2></div>
+          <div class="card__header"><h2 class="card__title">{{ 'system.ipv6Config' | translate }}</h2></div>
           <div class="card__body">
             <form class="form" [formGroup]="ipv6Form" (ngSubmit)="saveIPv6()">
               <label class="toggle">
                 <input class="toggle__track" type="checkbox" formControlName="enable">
-                <span class="toggle__label">IPv6 Enabled</span>
+                <span class="toggle__label">{{ 'system.ipv6Enabled' | translate }}</span>
               </label>
               <div class="form-actions">
                 <button class="btn btn--primary" type="submit" [disabled]="saving()">
-                  {{ saving() ? 'Saving…' : 'Save' }}
+                  {{ saving() ? ('common.saving' | translate) : ('common.save' | translate) }}
                 </button>
               </div>
             </form>
@@ -38,7 +38,7 @@
 
       @case ('device') {
         <div class="card">
-          <div class="card__header"><h2 class="card__title">Device Info</h2></div>
+          <div class="card__header"><h2 class="card__title">{{ 'system.deviceInfo' | translate }}</h2></div>
           <div class="card__body">
             <table class="kv">
               @for (e of entries(deviceInfo()); track e[0]) {
@@ -49,21 +49,20 @@
         </div>
       }
 
-
       @case ('control') {
         <div class="cards-grid" style="max-width:600px">
           <div class="card">
-            <div class="card__header"><h2 class="card__title">Reboot</h2></div>
+            <div class="card__header"><h2 class="card__title">{{ 'system.reboot' | translate }}</h2></div>
             <div class="card__body">
-              <p class="text-muted" style="margin-bottom:16px">Restart the Livebox. All connected devices will lose connectivity temporarily.</p>
-              <button class="btn btn--ghost" (click)="confirmAction.set('reboot')">↺ Reboot Livebox</button>
+              <p class="text-muted" style="margin-bottom:16px">{{ 'system.rebootDesc' | translate }}</p>
+              <button class="btn btn--ghost" (click)="confirmAction.set('reboot')">{{ 'system.rebootBtn' | translate }}</button>
             </div>
           </div>
           <div class="card">
-            <div class="card__header"><h2 class="card__title">Factory Reset</h2></div>
+            <div class="card__header"><h2 class="card__title">{{ 'system.factoryReset' | translate }}</h2></div>
             <div class="card__body">
-              <p class="text-muted" style="margin-bottom:16px">Reset to factory defaults. All configuration will be permanently lost.</p>
-              <button class="btn btn--danger" (click)="confirmAction.set('reset')">⚠ Factory Reset</button>
+              <p class="text-muted" style="margin-bottom:16px">{{ 'system.factoryResetDesc' | translate }}</p>
+              <button class="btn btn--danger" (click)="confirmAction.set('reset')">{{ 'system.factoryResetBtn' | translate }}</button>
             </div>
           </div>
         </div>
@@ -74,9 +73,9 @@
 
 <app-confirm-dialog
   [open]="!!confirmAction()"
-  [title]="confirmAction() === 'reboot' ? 'Reboot Livebox' : 'Factory Reset'"
+  [title]="confirmTitle()"
   [message]="confirmDialog()"
-  [confirmLabel]="confirmAction() === 'reboot' ? 'Reboot' : 'Reset'"
+  [confirmLabel]="confirmLabel()"
   [danger]="true"
   (confirmed)="onConfirm()"
   (cancelled)="confirmAction.set(null)" />

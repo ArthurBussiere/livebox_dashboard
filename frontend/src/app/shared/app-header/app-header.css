@@ -81,6 +81,13 @@
   white-space: nowrap;
 }
 
+.app-header__icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-sidebar-fg-muted);
+  flex-shrink: 0;
+}
+
 .app-header__label {
   font-size: 10px;
   font-weight: 700;
@@ -170,10 +177,9 @@
   transform: translateX(14px);
 }
 
-/* Logout button (pushed to the right) */
+/* Logout button */
 .app-header__logout {
-  margin-left: auto;
-  padding: 5px 14px;
+  padding: 6px;
   border-radius: var(--radius);
   border: 1px solid var(--color-sidebar-border);
   background: transparent;
@@ -190,9 +196,18 @@
   color: var(--color-sidebar-fg);
 }
 
-/* Reboot button (pushed to the right) */
+.app-header__logout svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Actions group (language toggle + logout) pushed to the right */
 .app-header__actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .app-header__btn {
