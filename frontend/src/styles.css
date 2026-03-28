@@ -137,3 +137,16 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 .inline-edit { display: flex; gap: 6px; align-items: center; }
 .search-bar { padding: 7px 10px; border: 1px solid var(--color-surface-border); border-radius: var(--radius); width: 260px; background: var(--color-surface); color: var(--color-text); }
 .search-bar:focus { outline: none; border-color: var(--color-accent); }
+
+/* ── Responsive (mobile < 768px) ────────────────────────────── */
+@media (max-width: 767px) {
+  .page { gap: 16px; }
+  .card__body { padding: 16px; }
+  .card__header { padding: 12px 16px; }
+
+  /* Stack form rows on mobile */
+  .form-row { grid-template-columns: 1fr; }
+
+  /* Search bar fills available width */
+  .search-bar { width: 100%; }
+}

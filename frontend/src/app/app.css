@@ -107,3 +107,65 @@ app-header {
   padding: 32px;
   overflow-y: auto;
 }
+
+/* Mobile sidebar backdrop — hidden by default, shown via JS class */
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 56px 0 0 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 199;
+}
+
+/* ── Mobile layout (< 768px) ───────────────────────────────── */
+@media (max-width: 767px) {
+  /* Always a single content column — no room for a sidebar column */
+  .shell,
+  .shell.sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  /* Content fills the only column */
+  .content {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 16px;
+  }
+
+  /* Sidebar: fixed off-canvas, hidden by default */
+  .sidebar {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    z-index: 200;
+    transform: translateX(-220px);
+    transition: transform 0.25s ease;
+  }
+
+  /* Slide in when sidebar is open */
+  .shell:not(.sidebar-collapsed) .sidebar {
+    transform: translateX(0);
+  }
+
+  /* On mobile the sidebar always shows full labels, never icon-only */
+  .sidebar-collapsed .nav-item {
+    padding: 10px 20px;
+    justify-content: flex-start;
+    border-left: 3px solid transparent;
+    border-right: none;
+  }
+  .sidebar-collapsed .nav-item--active {
+    border-left-color: var(--color-accent);
+    border-right-color: transparent;
+  }
+  .sidebar-collapsed .nav-item__label {
+    display: block;
+  }
+
+  /* Backdrop visible when sidebar open */
+  .shell:not(.sidebar-collapsed) .sidebar-backdrop {
+    display: block;
+  }
+}

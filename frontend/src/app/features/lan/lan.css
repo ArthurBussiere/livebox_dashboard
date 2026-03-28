@@ -107,6 +107,20 @@
   50% { opacity: 0.3; }
 }
 
+@media (max-width: 767px) {
+  .chart-wrapper {
+    min-height: 200px;
+  }
+
+  .chart-svg {
+    height: 180px;
+  }
+
+  .chart-stat__value {
+    font-size: 16px;
+  }
+}
+
 /* Footer */
 .chart-footer {
   display: flex;

@@ -232,3 +232,27 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ── Mobile header (< 768px) ───────────────────────────────── */
+@media (max-width: 767px) {
+  .app-header {
+    padding: 0 12px;
+  }
+
+  .app-header__brand {
+    width: auto;
+  }
+
+  /* Hide WAN & Devices groups and their dividers */
+  .app-header__group--secondary,
+  .app-header__divider--secondary {
+    display: none;
+  }
+
+  /* Hide WiFi SSID/channel text — keep only the toggle */
+  .app-header__label--hide-mobile,
+  .app-header__value--hide-mobile,
+  .app-header__sub--hide-mobile {
+    display: none;
+  }
+}

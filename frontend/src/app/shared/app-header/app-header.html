@@ -11,10 +11,10 @@
     <span class="app-header__title">Livebox</span>
   </div>
 
-  <div class="app-header__divider"></div>
+  <div class="app-header__divider app-header__divider--secondary"></div>
 
   <!-- WAN -->
-  <div class="app-header__group">
+  <div class="app-header__group app-header__group--secondary">
     <span class="app-header__label">{{ 'header.wan' | translate }}</span>
     <span class="app-header__dot" [class.app-header__dot--up]="wanUp()" [class.app-header__dot--down]="!wanUp()"></span>
     <span class="app-header__value">{{ wanStatus()?.['WanState'] ?? '—' }}</span>
@@ -29,10 +29,10 @@
     }
   </div>
 
-  <div class="app-header__divider"></div>
+  <div class="app-header__divider app-header__divider--secondary"></div>
 
   <!-- Devices -->
-  <div class="app-header__group">
+  <div class="app-header__group app-header__group--secondary">
     <svg class="app-header__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
       <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
     </svg>
@@ -42,20 +42,20 @@
     }
   </div>
 
-  <div class="app-header__divider"></div>
+  <div class="app-header__divider app-header__divider--secondary"></div>
 
   <!-- WiFi -->
   <div class="app-header__group">
-    <span class="app-header__label">{{ 'header.wifi' | translate }}</span>
+    <span class="app-header__label app-header__label--hide-mobile">{{ 'header.wifi' | translate }}</span>
     <label class="app-header__toggle">
       <input type="checkbox" [checked]="wifiEnabled()" (change)="toggleWifi()">
       <span class="app-header__toggle-track"></span>
     </label>
     @if (wifiSsid()) {
-    <span class="app-header__value">{{ wifiSsid() }}</span>
+    <span class="app-header__value app-header__value--hide-mobile">{{ wifiSsid() }}</span>
     }
     @if (wifiChannel()) {
-    <span class="app-header__sub">{{ 'header.channel' | translate }}{{ wifiChannel() }}</span>
+    <span class="app-header__sub app-header__sub--hide-mobile">{{ 'header.channel' | translate }}{{ wifiChannel() }}</span>
     }
   </div>
 

@@ -1,5 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ToastComponent } from './shared/toast/toast';
 import { AppHeader } from './shared/app-header/app-header';
 import { SafeHtmlPipe } from './shared/safe-html.pipe';
@@ -58,6 +60,17 @@ export class App implements OnInit {
     { path: '/system',   label: 'nav.system',    icon: ICONS.system   },
     { path: '/lan',      label: 'nav.lan',       icon: ICONS.lan      },
   ];
+
+  constructor() {
+    inject(Router).events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      takeUntilDestroyed(),
+    ).subscribe(() => {
+      if (typeof window !== 'undefined' && window.innerWidth < 768) {
+        this.layout.sidebarOpen.set(false);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.registry.load();
