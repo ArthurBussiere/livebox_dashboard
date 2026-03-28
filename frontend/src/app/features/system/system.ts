@@ -1,5 +1,4 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { NmcService } from '../../services/nmc.service';
 import { DeviceService } from '../../services/device.service';
@@ -13,32 +12,26 @@ import { ConfirmDialog } from '../../shared/confirm-dialog/confirm-dialog';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRecord = Record<string, any>;
 
-type SysTab = 'ipv6' | 'device' | 'control';
+type SysTab = 'device' | 'control';
 
 @Component({
   selector: 'app-system',
   templateUrl: './system.html',
   styleUrl: './system.css',
-  imports: [ReactiveFormsModule, LoadingSpinner, ErrorBanner, ConfirmDialog, TranslatePipe],
+  imports: [LoadingSpinner, ErrorBanner, ConfirmDialog, TranslatePipe],
 })
 export default class System implements OnInit {
   private readonly nmc = inject(NmcService);
   private readonly device = inject(DeviceService);
   private readonly i18n = inject(TranslationService);
-private readonly fb = inject(FormBuilder);
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly saving = signal(false);
   readonly tab = signal<SysTab>('device');
-
-  readonly ipv6Config = signal<AnyRecord | null>(null);
+  readonly ipv6Enabled = signal(false);
   readonly deviceInfo = signal<AnyRecord | null>(null);
-readonly confirmAction = signal<'reboot' | 'reset' | null>(null);
-
-  readonly ipv6Form = this.fb.group({
-    enable: [false],
-  });
+  readonly confirmAction = signal<'reboot' | 'reset' | null>(null);
 
   ngOnInit(): void {
     this.load();
@@ -52,8 +45,7 @@ readonly confirmAction = signal<'reboot' | 'reset' | null>(null);
     }).subscribe({
       next: ({ ipv6, devInfo }) => {
         const v6 = this.extract(ipv6);
-        this.ipv6Config.set(v6);
-        this.ipv6Form.patchValue({ enable: !!v6?.['Enable'] });
+        this.ipv6Enabled.set(!!v6?.['Enable']);
         this.deviceInfo.set(this.extract(devInfo));
         this.loading.set(false);
       },
@@ -61,12 +53,13 @@ readonly confirmAction = signal<'reboot' | 'reset' | null>(null);
     });
   }
 
-  saveIPv6(): void {
-    this.saving.set(true);
-    const v = this.ipv6Form.value;
-    this.nmc.setIPv6({ Enable: !!v.enable }).subscribe({
-      next: () => this.saving.set(false),
-      error: (err: ErrorResponse) => { this.error.set(err.detail); this.saving.set(false); },
+  saveIPv6(enabled: boolean): void {
+    this.ipv6Enabled.set(enabled);
+    this.nmc.setIPv6({ Enable: enabled }).subscribe({
+      error: (err: ErrorResponse) => {
+        this.error.set(err.detail);
+        this.ipv6Enabled.set(!enabled);
+      },
     });
   }
 

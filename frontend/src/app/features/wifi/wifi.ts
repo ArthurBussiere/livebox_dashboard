@@ -21,6 +21,7 @@ export default class Wifi implements OnInit {
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
+  readonly wifiEnabled = this.wifiService.wifiEnabled;
   readonly wifiData = signal<AnyRecord | null>(null);
   readonly guestData = signal<AnyRecord | null>(null);
   readonly pairing = signal(false);
@@ -35,6 +36,7 @@ ngOnInit(): void {
         const w = this.extract(wifi);
         const g = this.extract(guest);
         this.wifiData.set(w);
+        this.wifiService.wifiEnabled.set(!!w?.['Enable']);
         this.guestData.set(g);
         this.loading.set(false);
       },
@@ -43,9 +45,9 @@ ngOnInit(): void {
   }
 
   toggleWifi(checked: boolean): void {
-    this.wifiService.set({ Enable: checked }).subscribe({
+    this.wifiService.toggle().subscribe({
       next: () => this.wifiData.update((d) => d ? { ...d, Enable: checked } : d),
-      error: (err: ErrorResponse) => this.error.set(err.detail),
+      error: (err: ErrorResponse) => { this.wifiService.revertEnabled(); this.error.set(err.detail); },
     });
   }
 

@@ -10,31 +10,11 @@
     <div class="loading-center"><app-loading-spinner /></div>
   } @else {
     <div class="tabs">
-      <button class="tab" [class.tab--active]="tab()==='ipv6'" (click)="tab.set('ipv6')">{{ 'system.tabIpv6' | translate }}</button>
       <button class="tab" [class.tab--active]="tab()==='device'" (click)="tab.set('device')">{{ 'system.tabDevice' | translate }}</button>
       <button class="tab" [class.tab--active]="tab()==='control'" (click)="tab.set('control')">{{ 'system.tabControl' | translate }}</button>
     </div>
 
     @switch (tab()) {
-
-      @case ('ipv6') {
-        <div class="card" style="max-width:480px">
-          <div class="card__header"><h2 class="card__title">{{ 'system.ipv6Config' | translate }}</h2></div>
-          <div class="card__body">
-            <form class="form" [formGroup]="ipv6Form" (ngSubmit)="saveIPv6()">
-              <label class="toggle">
-                <input class="toggle__track" type="checkbox" formControlName="enable">
-                <span class="toggle__label">{{ 'system.ipv6Enabled' | translate }}</span>
-              </label>
-              <div class="form-actions">
-                <button class="btn btn--primary" type="submit" [disabled]="saving()">
-                  {{ saving() ? ('common.saving' | translate) : ('common.save' | translate) }}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      }
 
       @case ('device') {
         <div class="card">
@@ -51,6 +31,17 @@
 
       @case ('control') {
         <div class="cards-grid" style="max-width:600px">
+          <div class="card">
+            <div class="card__header"><h2 class="card__title">{{ 'system.ipv6Config' | translate }}</h2></div>
+            <div class="card__body">
+              <label class="toggle">
+                <input class="toggle__track" type="checkbox"
+                  [checked]="ipv6Enabled()"
+                  (change)="saveIPv6($any($event.target).checked)">
+                <span class="toggle__label">{{ 'system.ipv6Enabled' | translate }}</span>
+              </label>
+            </div>
+          </div>
           <div class="card">
             <div class="card__header"><h2 class="card__title">{{ 'system.reboot' | translate }}</h2></div>
             <div class="card__body">

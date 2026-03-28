@@ -17,7 +17,7 @@
         <div class="card__body">
           <label class="toggle">
             <input class="toggle__track" type="checkbox"
-              [checked]="wifiData()?.['Enable']"
+              [checked]="wifiEnabled()"
               (change)="toggleWifi($any($event.target).checked)">
             <span class="toggle__label">{{ 'wifi.enabled' | translate }}</span>
           </label>

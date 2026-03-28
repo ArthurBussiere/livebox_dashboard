@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '../core/api.service';
 import {
@@ -12,6 +12,18 @@ import {
 @Injectable({ providedIn: 'root' })
 export class WifiService {
   private readonly api = inject(ApiService);
+
+  readonly wifiEnabled = signal(false);
+
+  toggle(): Observable<unknown> {
+    const next = !this.wifiEnabled();
+    this.wifiEnabled.set(next);
+    return this.set({ Enable: next });
+  }
+
+  revertEnabled(): void {
+    this.wifiEnabled.set(!this.wifiEnabled());
+  }
 
   get(): Observable<unknown> {
     return this.api.get('/wifi');
