@@ -1,6 +1,8 @@
 stages:
   - build
   - deploy
+  - publish
+
 
 # ---------------------------------------------------------------------------
 # Build & push to GitLab Container Registry
