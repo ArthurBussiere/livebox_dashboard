@@ -59,15 +59,12 @@ deploy:
     - echo "DEPLOY_PATH=$DEPLOY_PATH"
   script:
     - |
-      ssh "$DEPLOY_USER@$DEPLOY_HOST" \
-        CI_REGISTRY="$CI_REGISTRY" \
-        CI_REGISTRY_USER="$CI_REGISTRY_USER" \
-        CI_REGISTRY_PASSWORD="$CI_REGISTRY_PASSWORD" \
-        CI_COMMIT_TAG="$CI_COMMIT_TAG" \
-        DEPLOY_PATH="$DEPLOY_PATH" \
-        bash << 'EOF'
-          docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-          cd "$DEPLOY_PATH"
-          IMAGE_TAG="$CI_COMMIT_TAG" docker compose pull
-          IMAGE_TAG="$CI_COMMIT_TAG" docker compose up -d --no-build
+      ssh "$DEPLOY_USER@$DEPLOY_HOST" bash -s << EOF
+        set -e
+        echo "Registry: $CI_REGISTRY"
+        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+        mkdir -p "$DEPLOY_PATH"
+        cd "$DEPLOY_PATH"
+        IMAGE_TAG="$CI_COMMIT_TAG" docker compose pull
+        IMAGE_TAG="$CI_COMMIT_TAG" docker compose up -d --no-build
       EOF
