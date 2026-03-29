@@ -2,21 +2,25 @@
 
 Interface web pour administrer votre box Orange (Livebox) depuis un navigateur.
 
+![Capture d'écran — gestion DHCP](resources/img.png)
+
 ## Fonctionnement
 
 L'application est composée de deux parties :
 
-- **Backend** (Python / FastAPI) — fait le lien entre le navigateur et l'API de la Livebox
-- **Frontend** (Angular) — l'interface graphique servie par le backend
+- **Backend** (Python 3.13 / FastAPI) — proxy JSON-RPC entre le navigateur et l'API interne de la Livebox, servi par uvicorn sur le port `4350`
+- **Frontend** (Angular 21) — SPA compilée et servie en tant que fichiers statiques par le backend en production
 
-Au premier accès, vous saisissez l'URL de votre Livebox (par défaut `http://192.168.1.1`), votre identifiant et votre mot de passe. Le backend vérifie les credentials directement auprès de la box et vous délivre un token de session. Aucune configuration préalable n'est nécessaire.
+Au premier accès, vous saisissez l'URL de votre Livebox (par défaut `http://192.168.1.1`), votre identifiant et votre mot de passe. Le backend s'authentifie directement auprès de la box et renvoie un token de session. Aucune configuration préalable n'est nécessaire.
+
+Fonctionnalités disponibles : gestion des appareils connectés, baux DHCP statiques, règles pare-feu, DynDNS, configuration LAN/Wi-Fi, et informations système.
 
 ## Déploiement avec Docker
 
 ### Prérequis
 
 - Docker installé sur la machine hôte
-- Être sur le même réseau que la Livebox (LAN ou VPN)
+- La Livebox doit être accessible depuis le container (même réseau ou routage approprié)
 
 ### Lancer l'application
 
@@ -29,14 +33,6 @@ docker run -d \
 ```
 
 Accédez ensuite à **http://\<ip-de-votre-serveur\>:4350** depuis votre navigateur.
-
-### Construire l'image soi-même
-
-```bash
-git clone <url-du-repo>
-cd livebox
-docker build -t livebox_dashboard .
-```
 
 ### Avec Docker Compose
 
@@ -59,7 +55,6 @@ uv run uvicorn main:app --reload --port 4350
 ```bash
 cd frontend
 npm install
-npm start        # démarre sur http://localhost:4200
+npm start        # démarre sur http://localhost:4200 (proxy /api → :4350)
+npm test         # tests unitaires (Vitest)
 ```
-
-Le frontend en mode dev proxifie automatiquement les appels API vers le backend sur le port 4350.
