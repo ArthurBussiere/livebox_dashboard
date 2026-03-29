@@ -54,6 +54,9 @@ deploy:
     - ssh-add "$SSH_PRIVATE_KEY"
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+    - echo "DEPLOY_HOST=$DEPLOY_HOST"
+    - echo "DEPLOY_USER=$DEPLOY_USER"
+    - echo "DEPLOY_PATH=$DEPLOY_PATH"
   script:
     - |
       ssh "$DEPLOY_USER@$DEPLOY_HOST" "
