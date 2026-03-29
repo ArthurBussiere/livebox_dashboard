@@ -91,7 +91,7 @@ publish-dockerhub:
       when: manual
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "registry.ppouz.lan:443"
-    - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN" "registry-1.docker.io"
+    - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_TOKEN" "docker.io"
   script:
     - |
       docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_TAG"
