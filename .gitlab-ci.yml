@@ -1,8 +1,8 @@
 variables:
-  GIT_SSL_CAINFO: /etc/ssl/certs/ppouz-ca.crt
   GIT_SSL_NO_VERIFY: "true"
   DOCKER_HOST: tcp://docker:2376
   DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_VERIFY: "1"
 
 stages:
   - build
@@ -13,16 +13,16 @@ stages:
 # Runs on every push. Tags the image with the commit SHA (and the Git tag when
 # a tag is pushed). Also updates the :latest tag on every run.
 # ---------------------------------------------------------------------------
+
 build:
   stage: build
   image: docker:27
   services:
-    - docker:27-dind
+    - name: docker:27-dind
+      alias: docker
   before_script:
-    # Injecter le CA dans le container job
     - cp /etc/ssl/certs/ppouz-ca.crt /usr/local/share/ca-certificates/ppouz-ca.crt
     - update-ca-certificates
-    # Login registry
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
   script:
     - |
