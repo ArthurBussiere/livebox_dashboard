@@ -15,9 +15,8 @@ build:
     - name: docker:27-dind
       command: ["--insecure-registry=registry.ppouz.lan:443"]
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
-    DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_VERIFY: 1
+    DOCKER_TLS_CERTDIR: ""          # ← désactive TLS dind
+    DOCKER_HOST: tcp://docker:2375  # ← port non-TLS
   before_script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "registry.ppouz.lan:443"
   script:
