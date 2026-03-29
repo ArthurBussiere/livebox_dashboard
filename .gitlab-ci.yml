@@ -1,3 +1,6 @@
+variables:
+  GIT_SSL_CAINFO: /etc/ssl/certs/ppouz-ca.crt
+
 stages:
   - build
   - deploy
