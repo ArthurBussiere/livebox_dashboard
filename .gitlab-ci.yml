@@ -19,6 +19,7 @@ build:
   services:
     - name: docker:27-dind
       alias: docker
+      command: ["--insecure-registry=registry.ppouz.lan"]
   before_script:
     - cp /etc/ssl/certs/ppouz-ca.crt /usr/local/share/ca-certificates/ppouz-ca.crt
     - update-ca-certificates
