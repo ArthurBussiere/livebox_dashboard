@@ -25,7 +25,6 @@ include:
 # ---------------------------------------------------------------------------
 docker-buildah-build:
   before_script:
-    - export CUSTOM_CA_CERTS="$(cat /etc/ssl/certs/ppouz-ca.crt)"
     - !reference [.docker-base, before_script]
-    - mkdir -p "/etc/containers/certs.d/registry.ppouz.lan:443"
-    - cp /etc/ssl/certs/ppouz-ca.crt "/etc/containers/certs.d/registry.ppouz.lan:443/ca.crt"
+    - mkdir -p /etc/containers/registries.conf.d
+    - printf '[[registry]]\nlocation = "registry.ppouz.lan:443"\ninsecure = true\n' > /etc/containers/registries.conf.d/ppouz-insecure.conf
