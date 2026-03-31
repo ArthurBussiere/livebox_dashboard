@@ -27,3 +27,5 @@ docker-buildah-build:
   before_script:
     - export CUSTOM_CA_CERTS="$(cat /etc/ssl/certs/ppouz-ca.crt)"
     - !reference [.docker-base, before_script]
+    - mkdir -p "/etc/containers/certs.d/registry.ppouz.lan:443"
+    - cp /etc/ssl/certs/ppouz-ca.crt "/etc/containers/certs.d/registry.ppouz.lan:443/ca.crt"
