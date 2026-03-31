@@ -15,3 +15,15 @@ stages:
 # ---------------------------------------------------------------------------
 include:
   - component: $CI_SERVER_FQDN/to-be-continuous/docker/gitlab-ci-docker@8.2.0
+
+
+# ---------------------------------------------------------------------------
+# The runner mounts the internal CA cert at /etc/ssl/certs/ppouz-ca.crt, but
+# buildah (Fedora-based) needs it installed via tbc's install_ca_certs().
+# Exporting CUSTOM_CA_CERTS before !reference runs ensures install_ca_certs
+# picks it up when .docker-base's before_script calls it.
+# ---------------------------------------------------------------------------
+docker-buildah-build:
+  before_script:
+    - export CUSTOM_CA_CERTS="$(cat /etc/ssl/certs/ppouz-ca.crt)"
+    - !reference [.docker-base, before_script]
