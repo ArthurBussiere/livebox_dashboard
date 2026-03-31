@@ -1,7 +1,25 @@
 stages:
   - build
+  - test
   - deploy
   - publish
+
+# ---------------------------------------------------------------------------
+# to-be-continuous Angular template
+# Provides: ng-build (compile + unit tests), ng-audit, ng-outdated, ng-semgrep
+# Docs: https://to-be-continuous.gitlab.io/doc/ref/angular/
+# ---------------------------------------------------------------------------
+include:
+  - component: $CI_SERVER_FQDN/to-be-continuous/angular/gitlab-ci-angular@4.14.0
+    inputs:
+      # Node 22 image — @angular/cli is installed via npm ci from devDependencies
+      cli-image: "node:22-alpine"
+      # Angular workspace is in the frontend/ subdirectory
+      workspace-dir: "frontend"
+      # Vitest-compatible: drop Karma-specific --reporters flag
+      test-args: "test --no-watch"
+      # No ESLint config in this project
+      lint-disabled: "true"
 
 
 # ---------------------------------------------------------------------------
