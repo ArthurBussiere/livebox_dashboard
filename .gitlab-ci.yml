@@ -2,7 +2,8 @@ stages:
   - package-build
   - package-test
   - package-publish
-
+  - build
+  - publish
 
 # ---------------------------------------------------------------------------
 # to-be-continuous: Docker
