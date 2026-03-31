@@ -19,7 +19,7 @@ include:
       # Node 22 image — @angular/cli is installed via npm ci from devDependencies
       cli-image: "node:22-alpine"
       # Angular workspace is in the frontend/ subdirectory
-      workspace-dir: "frontend"
+      workspace-dir: "/builds/Arthur/liveboxDashboard/frontend"
       # Vitest-compatible: drop Karma-specific --reporters flag
       test-args: "test --no-watch"
       # No ESLint config in this project
