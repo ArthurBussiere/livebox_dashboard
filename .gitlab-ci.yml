@@ -32,50 +32,35 @@ build:
       docker push "$CI_REGISTRY_IMAGE:latest"
 
 # ---------------------------------------------------------------------------
-# Deploy via SSH — only on Git tags (e.g. v1.2.3)
-#
-# Required CI/CD variables (Settings → CI/CD → Variables):
-#   SSH_PRIVATE_KEY  — private key with access to the deploy server
-#   DEPLOY_HOST      — server hostname or IP
-#   DEPLOY_USER      — SSH user on the server
-#   DEPLOY_PATH      — absolute path to docker-compose.yml on the server
-#
-# The docker-compose.yml on the server must reference the registry image:
-#
-#   services:
-#     livebox_dashboard:
-#       image: registry.gitlab.com/<your-group>/<your-project>:${IMAGE_TAG:-latest}
-#       ports:
-#         - "4350:4350"
-#       restart: unless-stopped
-#       env_file: .env
+# Deploy via l'API Komodo (stack livebox_dashboard sur services) — sur tags Git
+# Le compose de production vit dans Arthur/stacks (services/livebox_dashboard).
 # ---------------------------------------------------------------------------
 deploy:
   stage: deploy
-  image: alpine:latest
   rules:
     - if: $CI_COMMIT_TAG
+  image: alpine:3.20
+  timeout: 15m
+  # Variables de groupe (applications) : KOMODO_URL, KOMODO_API_KEY, KOMODO_API_SECRET (utilisateur de
+  # service Komodo gitlab-ci, droit Write sur la stack seulement), PPOUZ_CA (fichier). La stack vit
+  # dans Arthur/stacks (services/livebox_dashboard) ; seuls TAG et CI_REGISTRY_IMAGE de son Environment changent.
+  variables:
+    KOMODO_STACK: livebox_dashboard
+    DEPLOY_TAG: $CI_COMMIT_TAG
   before_script:
-    - apk add --no-cache openssh-client
-    - eval $(ssh-agent -s)
-    - chmod 400 "$SSH_PRIVATE_KEY"
-    - ssh-add "$SSH_PRIVATE_KEY"
-    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
-    - echo "DEPLOY_HOST=$DEPLOY_HOST"
-    - echo "DEPLOY_USER=$DEPLOY_USER"
-    - echo "DEPLOY_PATH=$DEPLOY_PATH"
+    - apk add --no-cache curl jq
   script:
     - |
-      ssh "$DEPLOY_USER@$DEPLOY_HOST" bash -s << EOF
-        set -e
-        echo "Registry: $CI_REGISTRY"
-        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-        mkdir -p "$DEPLOY_PATH"
-        cd "$DEPLOY_PATH"
-        IMAGE_TAG="$CI_COMMIT_TAG" docker compose pull
-        IMAGE_TAG="$CI_COMMIT_TAG" docker compose up -d --no-build
-      EOF
+      set -eu
+      k() { curl -fsS --cacert "$PPOUZ_CA" -X POST "$KOMODO_URL/$1" -H "X-Api-Key: $KOMODO_API_KEY" -H "X-Api-Secret: $KOMODO_API_SECRET" -H 'Content-Type: application/json' -d "$2"; }
+      ENV=$(k read/GetStack "{\"stack\":\"$KOMODO_STACK\"}" | jq -r .config.environment | grep -vE '^(TAG|CI_REGISTRY_IMAGE)=' || true)
+      ENV=$(printf '%s\nCI_REGISTRY_IMAGE=%s\nTAG=%s\n' "$ENV" "$CI_REGISTRY_IMAGE" "$DEPLOY_TAG")
+      k write/UpdateStack "$(jq -nc --arg s "$KOMODO_STACK" --arg e "$ENV" '{id:$s,config:{environment:$e,auto_pull:true}}')" > /dev/null
+      ID=$(k execute/DeployStack "{\"stack\":\"$KOMODO_STACK\"}" | jq -r '._id."$oid"')
+      echo "Deploy Komodo de $KOMODO_STACK ($DEPLOY_TAG), update $ID"
+      until UPD=$(k read/GetUpdate "{\"id\":\"$ID\"}") && [ "$(echo "$UPD" | jq -r .status)" = Complete ]; do sleep 5; done
+      echo "$UPD" | jq -r '.logs[] | "== \(.stage) : \(if .success then "ok" else "ÉCHEC" end)"'
+      echo "$UPD" | jq -e .success > /dev/null
 
 publish-dockerhub:
   stage: publish
