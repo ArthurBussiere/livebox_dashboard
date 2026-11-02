@@ -33,7 +33,7 @@ build:
 
 # ---------------------------------------------------------------------------
 # Deploy via l'API Komodo (stack livebox_dashboard sur services) — sur tags Git
-# Le compose de production vit dans Arthur/stacks (services/livebox_dashboard).
+# Le compose de production vit dans homelab/stacks (services/livebox_dashboard).
 # ---------------------------------------------------------------------------
 deploy:
   stage: deploy
@@ -43,7 +43,7 @@ deploy:
   timeout: 15m
   # Variables de groupe (applications) : KOMODO_URL, KOMODO_API_KEY, KOMODO_API_SECRET (utilisateur de
   # service Komodo gitlab-ci, droit Write sur la stack seulement), PPOUZ_CA (fichier). La stack vit
-  # dans Arthur/stacks (services/livebox_dashboard) ; seuls TAG et CI_REGISTRY_IMAGE de son Environment changent.
+  # dans homelab/stacks (services/livebox_dashboard) ; seuls TAG et CI_REGISTRY_IMAGE de son Environment changent.
   variables:
     KOMODO_STACK: livebox_dashboard
     DEPLOY_TAG: $CI_COMMIT_TAG
